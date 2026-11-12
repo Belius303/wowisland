@@ -85,7 +85,7 @@ It's transparent and click-through everywhere except on the island, never steals
 
 Hover the island to expand it. Requirements: Windows 10/11 x64 with the WebView2 runtime (already part of Windows 11).
 
-> **SmartScreen warning?** The exe isn't code-signed yet, so Windows may say it's from an unknown publisher: click *More info → Run anyway*. You can check the file against the SHA-256 published with each release, or build it yourself (below).
+> **SmartScreen warning?** The exe isn't code-signed yet, so Windows may say it's from an unknown publisher: click *More info → Run anyway*. You can check the file against the SHA-256 published with each release (`certutil -hashfile WowIsland.exe SHA256` in a terminal), or build it yourself (below).
 
 ## Privacy
 

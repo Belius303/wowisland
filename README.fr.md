@@ -85,7 +85,7 @@ Elle est transparente et laisse passer les clics partout sauf sur l'île, ne vol
 
 Survole l'île pour la déplier. Prérequis : Windows 10/11 x64 avec le runtime WebView2 (déjà inclus dans Windows 11).
 
-> **Avertissement SmartScreen ?** L'exe n'est pas encore signé, Windows peut donc dire qu'il vient d'un éditeur inconnu : *Informations complémentaires → Exécuter quand même*. Tu peux vérifier le fichier avec le SHA-256 publié avec chaque version, ou le compiler toi-même (plus bas).
+> **Avertissement SmartScreen ?** L'exe n'est pas encore signé, Windows peut donc dire qu'il vient d'un éditeur inconnu : *Informations complémentaires → Exécuter quand même*. Tu peux vérifier le fichier avec le SHA-256 publié avec chaque version (`certutil -hashfile WowIsland.exe SHA256` dans un terminal), ou le compiler toi-même (plus bas).
 
 ## Vie privée
 
