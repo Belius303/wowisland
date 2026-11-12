@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Test OCR + QR</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+  body { margin: 0; background: #fff; color: #111; font: 600 34px "Segoe UI", sans-serif; display: flex; gap: 40px; flex-direction: column; align-items: flex-start; gap: 24px; padding: 30px; }
+  body > div:first-child { white-space: nowrap; font-size: 26px; }
+  #qr img { width: 240px; height: 240px; image-rendering: pixelated; }
+</style>
+</head>
+<body>
+  <div>Bonjour depuis l'île<br /><span style="font-weight:400;font-size:26px">Facture n° 4217 — 39,90 €</span></div>
+  <div id="qr"></div>
+  <script>
+    const q = qrcode(0, "M");
+    q.addData("https://example.com/test-ile");
+    q.make();
+    document.getElementById("qr").innerHTML = q.createImgTag(6, 12);
+  </script>
+</body>
+</html>

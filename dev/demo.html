@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Démo island</title>
+<link rel="stylesheet" href="../ui/style.css">
+<style>
+  html,body{background:linear-gradient(135deg,#3b4a6b,#7a5c8a 50%,#c98a6b) !important}
+  #frame{position:relative;width:640px;height:340px;margin:0 auto;outline:1px dashed rgba(255,255,255,.25)}
+  #ctl{position:fixed;left:10px;bottom:10px;display:flex;flex-wrap:wrap;gap:6px;max-width:620px}
+  #ctl button{background:#222;color:#fff;padding:6px 10px;border-radius:8px;font-size:12px}
+  html.scene,html.scene body{background:radial-gradient(circle at 18% 0%,rgba(110,140,255,.55),transparent 55%),radial-gradient(circle at 85% 100%,rgba(255,100,160,.45),transparent 60%),linear-gradient(135deg,#1b1f3d,#3a2758) !important;overflow:hidden}
+  html.scene #ctl{display:none} html.scene #frame{outline:none;height:470px;margin:0}
+</style></head><body>
+<div id="frame"></div>
+<div id="ctl">
+  <button onclick="hov(true)">hover on</button><button onclick="hov(false)">hover off</button>
+  <button onclick="music(true)">musique</button><button onclick="music(false)">pause</button><button onclick="emit('media',[])">stop musique</button><button onclick="both()">live + spotify</button>
+  <button onclick="emit('secret',{source:'gmail',from:'Google',subject:'x',code:'482913',link:null,copied:true})">OTP</button>
+  <button onclick="emit('secret',{source:'gmail',from:'Notion',subject:'x',code:null,link:'https://www.notion.so/loginwithemail?token=abc',copied:false})">lien</button>
+  <button onclick="emit('notification',{id:1,app:'Discord',title:'Lucas',body:'t\'es dispo pour une game ce soir ? on lance vers 21h',icon:null,phone:false})">discord</button>
+  <button onclick="emit('notification',{id:2,app:'WhatsApp',title:'Maman',body:'Tu rentres à quelle heure ?',icon:null,phone:true})">iphone notif</button>
+  <button onclick="emit('mail',{account:'moi@gmail.com',from:'Amazon',subject:'Votre colis est en route',snippet:''})">mail</button>
+  <button onclick="emit('iphone',{connected:true,name:'iPhone de Sam',battery:76,charging:true,full:false,error:null})">iPhone branché</button>
+  <button onclick="emit('iphone',{connected:false,name:'',battery:null,charging:false,full:false,error:null})">débranché</button>
+  <button onclick="emit('screenshot',{path:'C:/x.png',thumb:shot(),width:1920,height:1080})">capture</button><button onclick="emit('screenshot',{id:77,path:'C:/x.png',thumb:shot(),width:1920,height:1080});setTimeout(()=>emit('shot_info',{id:77,text:'Bonjour\nligne 2',qr:'https://www.example.com/promo?x=1'}),600)">capture QR</button><button onclick="emit('screenshot',{id:78,path:'C:/x.png',thumb:shot(),width:1920,height:1080});setTimeout(()=>emit('shot_info',{id:78,text:'Facture n° 42',qr:null}),600)">capture texte</button><button onclick="emit('screenshot',{id:79,path:null,thumb:shot(),width:1920,height:1080});setTimeout(()=>emit('shot_info',{id:79,text:null,qr:'WIFI:T:WPA;S:Maison;P:abc\\;12;;'}),600)">capture wifi</button>
+  <button onclick="game(true)">jeu lancé</button><button onclick="game(false)">jeu fermé</button><button onclick="lol()">coach LoL</button><button onclick="emit('lol',null)">fin LoL</button>
+</div>
+
+<script>
+  // ?scene=… : captures d'écran du README (dev/shots.mjs). ?lang=en|fr force la langue.
+  const Q = new URLSearchParams(location.search), SCENE = Q.get('scene'), EN = (Q.get('lang') || localStorage.getItem('island-lang')) === 'en';
+  if (Q.get('lang')) localStorage.setItem('island-lang', Q.get('lang'));
+  if (SCENE) document.documentElement.classList.add('scene');
+  // démo du téléchargeur : analyse factice + progression simulée
+  const GRD = { jobs: [{ id: 50, url: 'https://www.youtube.com/watch?v=vk3faosjB8M&list=RDMMC55CgIJgwKg', title: 'Mix - Me niego || Speed Up', author: 'nly.musicx', thumb: null, kind: 'audio', label: 'MP3 · 10 titres du mix', status: 'done', pct: 1, bytes: 0, speed: 0, eta: null, item: null, live: false, path: 'x', files: 8, items: ['C:/Users/moi/Downloads/Île/My Mix/003 - Daddy Yankee ~ Con Calma (sped up tik tok version) [efNXxSwH7FM].mp3','C:/Users/moi/Downloads/Île/My Mix/004 - Otilia - Bilionera ( sped up ) [UHH-5BnpZj8].mp3','C:/Users/moi/Downloads/Île/My Mix/005 - Luis Fonsi, Daddy Yankee- Despacito (speed up) [yhau-tVIiS0].mp3','C:/Users/moi/Downloads/Île/My Mix/006 - Bailando [ sped up ] [R_JthcdD4M8].mp3','C:/Users/moi/Downloads/Île/My Mix/007 - Shakira - Hips Dont Lie (sped up) [FU70rmN7s8o].mp3','C:/Users/moi/Downloads/Île/My Mix/008 - Pitbull - Rain Over Me (speed up) [pXvbKTztIRg].mp3','C:/Users/moi/Downloads/Île/My Mix/009 - Danza Kuduro (sped up) [luhDuHlT40w].mp3','C:/Users/moi/Downloads/Île/My Mix/010 - Taki Taki (speed up) [hH6aBAjYL6Y].mp3'], error: '2 titres déjà dans Ma musique, sautés', in_music: false }], seq: 50, ready: true };
+  function grabDemo(c, a) {
+    if (c === 'grab_status') return { ready: GRD.ready, ytdlp: GRD.ready, ffmpeg: true, deno: true, installing: null, error: null, dir: 'C:\\Users\\moi\\Downloads\\Île' };
+    if (c === 'grab_install') { let p = 0; const t = setInterval(() => { p += 20; emit('grab-setup', { ready: p >= 100, ytdlp: p >= 100, ffmpeg: true, deno: true, installing: p >= 100 ? null : 'yt-dlp : ' + p + ' %' }); if (p >= 100) { GRD.ready = true; clearInterval(t); } }, 400); return; }
+    if (c === 'grab_jobs') return GRD.jobs;
+    if (c === 'grab_probe') return new Promise((res, rej) => setTimeout(() => {
+      if (/netflix/.test(a.url)) return rej('Netflix protège ses contenus (DRM) : impossible de les télécharger.');
+      if (/list=RD/.test(a.url)) return res({ gif: true, url: a.url, title: 'Me niego || Speed Up', author: 'speed songs', duration: 199, live: false, playlist: null, id: 'vk3faosjB8M', thumb: null,
+        videos: [{ h: 1080, size: 40000000 }, { h: 720, size: 20000000 }], audio: true, audio_size: 3200000, subs: null, mix: { url: 'https://www.youtube.com/watch?v=vk3faosjB8M&list=RDvk3faosjB8M', title: 'Mix - Me niego || Speed Up' } });
+      if (/list=/.test(a.url)) return res({ url: a.url, title: 'Popular Music Videos', author: 'Music', thumb: null, playlist: 182, videos: [], audio: true, subs: null, live: false, id: 'PL1' });
+      if (/spotify|deezer/.test(a.url)) return res({ url: a.url, title: 'Random Access Memories', author: 'Daft Punk', thumb: null, music: /spotify/.test(a.url) ? 'Spotify' : 'Deezer', mkind: 'album', count: 13,
+        tracks: Array.from({ length: 13 }, (_, i) => ({ title: 'Titre ' + (i + 1), artist: 'Daft Punk' })), duration: 4482, playlist: null, videos: [], audio: true, subs: null, live: false, id: 'ram' });
+      if (/x\.com|twitter/.test(a.url)) return res({ url: a.url, title: 'chat qui saute', author: 'someone', duration: 6, live: false, playlist: null, id: 'x1', thumb: null, videos: [{ h: 0, size: 900000 }], audio: false, gif: true, subs: null });
+      if (/twitch/.test(a.url)) return res({ url: a.url, title: 'Ranked jusqu\'à Master', author: 'streamer', thumb: null, playlist: null, videos: [{ h: 1080, size: 0 }, { h: 720, size: 0 }], audio: true, subs: null, live: true, id: 'tw' });
+      res({ gif: true, url: a.url, title: 'COSTA RICA IN 4K 60fps HDR (ULTRA HD)', author: 'Jacob + Katie Schwarz', duration: 314, live: false, playlist: null, id: 'LXb3EKWsInQ',
+        thumb: null, videos: [{ h: 2160, size: 1283750207 }, { h: 1440, size: 716506617 }, { h: 1080, size: 253315601 }, { h: 720, size: 155030578 }, { h: 480, size: 58326664 }],
+        audio: true, audio_size: 5205204, subs: { lang: 'en', auto: true } });
+    }, 700));
+    if (c === 'grab_start') {
+      const j = { id: ++GRD.seq, url: a.url, title: a.info.title, author: a.info.author, thumb: a.info.thumb, kind: a.kind, music: a.info.music || null, cur: a.info.music ? 'Give Life Back to Music' : null, label: a.kind === 'gif' ? 'GIF' : a.kind === 'audio' ? (a.info.count > 1 ? 'MP3 · ' + a.info.count + ' titres' : 'MP3') : a.kind === 'text' ? 'Transcription' : (a.format ? (a.format >= 2160 ? '4K' : a.format + 'p') : 'Vidéo') + (a.start != null || a.end != null ? ' · extrait' : ''), status: 'queued', pct: null, bytes: 0, speed: 0, eta: null, item: null, live: a.info.live, path: null, files: 0, error: null };
+      GRD.jobs.push(j); emit('grab', GRD.jobs.map(x => ({ ...x })));
+      const total = 80e6;
+      setTimeout(() => { j.status = 'running'; const t = setInterval(() => {
+        if (j.status === 'stopped') return clearInterval(t);
+        j.bytes += 6e6; j.speed = 12e6; j.pct = j.live ? null : Math.min(1, j.bytes / total); j.eta = Math.max(0, Math.round((total - j.bytes) / j.speed));
+        if (!j.live && j.bytes >= total) { j.status = 'post'; j.speed = 0; clearInterval(t); setTimeout(() => { j.status = 'done'; j.pct = 1; j.files = 1; j.path = 'C:\\x.mp4'; emit('grab', GRD.jobs.map(x => ({ ...x }))); emit('grab-done', { ...j }); }, 900); }
+        emit('grab', GRD.jobs.map(x => ({ ...x })));
+      }, 500); }, 400);
+      return j.id;
+    }
+    if (c === 'grab_stop') { const j = GRD.jobs.find(x => x.id === a.id); if (j) { j.status = j.live ? 'done' : 'stopped'; j.speed = 0; } emit('grab', GRD.jobs.map(x => ({ ...x }))); return; }
+    if (c === 'grab_music_add') return new Promise((res) => setTimeout(() => { const j = GRD.jobs.find(x => x.id === a.id); j.in_music = true; emit('grab', GRD.jobs.map(x => ({ ...x }))); res({ added: 1, already: 0, total: 1, ids: j.items ? j.items.map((_, i) => MU[i % MU.length].id) : ['0'] }); }, 400));
+    if (c === 'grab_spotify_like') return new Promise((res) => setTimeout(() => { const j = GRD.jobs.find(x => x.id === a.id); j.liked = 'Dans Spotify (fichiers locaux)'; emit('grab', GRD.jobs.map(x => ({ ...x }))); const first = !GRD.spOnce; GRD.spOnce = true; res({ liked: j.liked, added: 1, already: 0, total: 1, dir: ['C:','Users','demo','Music','Spotify (Île)'].join(String.fromCharCode(92)), first, spotifast: window.SF || null }); }, 500));
+    if (c === 'open_spotify' || c === 'grab_spotify_dir' || c === 'copy_text') return Promise.resolve();
+    if (c === 'phone_device') return Promise.resolve(window.PHDEV || null);
+    if (c === 'phone_scan') return new Promise((res) => setTimeout(() => res(window.PHNONE ? [] : [{ alias: 'Pixel de Mo', ip: '192.168.1.23', port: 53317, https: true, fingerprint: 'aa', model: 'Google Pixel 8', kind: 'mobile' }, { alias: 'iPad', ip: '192.168.1.31', port: 53317, https: true, fingerprint: 'bb', model: 'iPad', kind: 'tablet' }]), 1500));
+    if (c === 'phone_cancel') { const j = GRD.jobs.find(x => x.id === a.id); j.phone = null; clearInterval(window.PHT); emit('grab', GRD.jobs.map(x => ({ ...x }))); return Promise.resolve(); }
+    if (c === 'phone_send') {
+      const d = a.dev || window.PHDEV;
+      if (!d) return Promise.reject('choose');
+      window.PHDEV = d;
+      const j = GRD.jobs.find(x => x.id === a.id), up = (s) => { j.phone = s; emit('grab', GRD.jobs.map(x => ({ ...x }))); };
+      up({ state: 'find', dev: d.alias });
+      setTimeout(() => up({ state: 'wait', dev: d.alias }), 800);
+      let pct = 0;
+      setTimeout(() => { window.PHT = setInterval(() => { pct += 0.08; if (pct >= 1) { clearInterval(window.PHT); up({ state: 'done', dev: d.alias, msg: j.items && j.items.length > 1 ? j.items.length + ' fichiers' : null }); } else up({ state: 'send', dev: d.alias, pct }); }, 250); }, 2600);
+      return Promise.resolve();
+    }
+    if (c === 'grab_remove') { GRD.jobs = GRD.jobs.filter(x => x.id !== a.id); emit('grab', GRD.jobs.map(x => ({ ...x }))); return; }
+    if (c === 'grab_clear') { GRD.jobs = GRD.jobs.filter(x => ['queued', 'running', 'post'].includes(x.status)); emit('grab', GRD.jobs.map(x => ({ ...x }))); return; }
+  }
+</script>
+<script>
+  // Mock minimal de l'API Tauri
+  const bus = {};
+  window.__TAURI__ = {
+    core: { invoke: async (c, a) => { console.log('invoke', c, a); if (c.startsWith('grab_') || c.startsWith('phone_')) return grabDemo(c, a); if (c==='get_ui_config') return {hide_in_fullscreen:true, spotify:true, hidden_tools:[], lyrics_compact:true}; if (c==='lyrics') return LY; if (c==='spotify_state') return SP; if (c==='music_library') return {tracks:MU, now:null}; if (c==='music_cover') return a.id==='0'?A:null; if (c==='music_play') { const t=MU.find(x=>x.id===a.ids[a.start]); emit('media',[{id:'dynamic-island',title:t.title,artist:t.artist,album:t.album,app:'Ma musique',playing:true,position:0,duration:t.duration,art:A,current:true,shuffle:a.shuffle,repeat:0}]); return; } if (c==='music_volume') return a.volume ?? 72; if (c==='music_delete') { const i=MU.findIndex(x=>x.id===a.id); if (i>=0) MU.splice(i,1); return; } if (c==='music_folder'||c==='spotify_mode') return; if (c==='spotify_set_volume') { SP.volume=a.volume; return; } if (c==='get_mixer') return MIX; } },
+    event: { listen: async (n, f) => { (bus[n] = bus[n] || []).push(f); } },
+  };
+  function emit(n, p) { (bus[n] || []).forEach((f) => f({ payload: p })); }
+  function hov(v) { emit('hover', v); }
+  function art() { // pochette inventée : coucher de soleil sur la mer
+    const c=document.createElement('canvas'),W=600;c.width=c.height=W;const g=c.getContext('2d');
+    let gr=g.createLinearGradient(0,0,0,W*.62);gr.addColorStop(0,'#0d1b3d');gr.addColorStop(.45,'#4a2a7a');gr.addColorStop(.8,'#d9507a');gr.addColorStop(1,'#ff9a5a');g.fillStyle=gr;g.fillRect(0,0,W,W*.62);
+    g.save();g.beginPath();g.rect(0,0,W,W*.62);g.clip();gr=g.createLinearGradient(0,W*.3,0,W*.62);gr.addColorStop(0,'#ffe08a');gr.addColorStop(1,'#ff5e7e');g.fillStyle=gr;g.beginPath();g.arc(W/2,W*.6,W*.24,0,7);g.fill();
+    g.globalCompositeOperation='destination-out';for(let k=0;k<6;k++){const y=W*(.47+k*.026),h=2+k*2.2;g.fillRect(0,y,W,h);}g.restore();
+    gr=g.createLinearGradient(0,W*.62,0,W);gr.addColorStop(0,'#3a1f5c');gr.addColorStop(1,'#0a0f24');g.fillStyle=gr;g.fillRect(0,W*.62,W,W*.38);
+    for(let k=0;k<14;k++){const y=W*(.64+k*.024),w=W*(.36-k*.02);g.fillStyle=`rgba(255,${150+k*4},120,${.55-k*.035})`;g.fillRect(W/2-w/2+(k%2?6:-6),y,w,2.5);}
+    for(let k=0;k<60;k++){g.fillStyle=`rgba(255,255,255,${Math.random()*.6})`;g.fillRect(Math.random()*W,Math.random()*W*.35,1.6,1.6);}
+    return c.toDataURL(); }
+  function shot() { const c=document.createElement('canvas');c.width=320;c.height=180;const g=c.getContext('2d');g.fillStyle='#1e3a5f';g.fillRect(0,0,320,180);g.fillStyle='#fff';g.fillRect(20,20,180,12);g.fillRect(20,44,240,8);return c.toDataURL(); }
+  const A = art();
+  const MU = [['Afterglow','Nova Lane',262],['Nights','Frank Ocean',307],['Pink + White','Frank Ocean',184],['Redbone','Childish Gambino',327],['Feels Like Summer','Childish Gambino',298],['Self Control','Frank Ocean',249],['Electric Feel','MGMT',229],['Ivy','Frank Ocean',249]].map(([title,artist,duration],i)=>({id:String(i),title,artist,album:'',duration,added:i}));
+  const LY_EN = ['City lights are dancing in the rain','We drive without a map tonight','Your voice still echoes in the dark','Holding on to every word we said','And the lights go by, by, by','Until the morning we rewrite the world'];
+  const LY = (EN ? LY_EN : ['Les néons dansent sur la ville endormie','On roule sans savoir où la nuit nous mène','Ta voix résonne encore dans le silence',"Je garde chaque mot qu'on s'est dit",'Et les lumières passent, passent, passent',"Jusqu'au matin on refait le monde"]).flatMap((t,i)=>[{t:58+i*4.2,text:t}]).concat([{t:84,text:EN?'One more time under the electric sky':'Encore une fois sous le ciel électrique'},{t:89,text:EN?'We forget it all, we start again':'On oublie tout, on recommence'}]);
+  function music(p) { emit('media',[{id:'Spotify.exe',title:'Afterglow',artist:'Nova Lane',album:'Night Drive',app:'Spotify',playing:p,position:63,duration:262,art:A,current:true}]); }
+  function both() { emit('media',[
+    {id:'Spotify.exe',title:'Afterglow',artist:'Nova Lane',album:'Night Drive',app:'Spotify',playing:true,position:63,duration:262,art:A,current:false},
+    {id:'Chrome',title:'LIVE — Ranked jusqu\'à Master',artist:'Twitch',album:'',app:'Chrome',playing:true,position:0,duration:0,art:null,current:true}]); }
+  function gicon() { const c=document.createElement('canvas');c.width=c.height=96;const g=c.getContext('2d');g.fillStyle='#0a1428';g.fillRect(0,0,96,96);g.strokeStyle='#c89b3c';g.lineWidth=7;g.beginPath();g.arc(48,48,30,0,7);g.stroke();g.fillStyle='#c89b3c';g.font='bold 40px serif';g.textAlign='center';g.fillText('L',48,62);return c.toDataURL(); }
+  const GI = gicon();
+  const LOL = { key:'discord:1', name:'League of Legends', icon:GI, cover:null, since:Date.now()-23*60000, last:Date.now() };
+  const DDV = 'https://ddragon.leagueoflegends.com/cdn/16.22.1/img/';
+  const it = (id, name, owned) => ({ id, name, icon: DDV + 'item/' + id + '.png', owned });
+  let lolStep = 0;
+  function lol() {
+    game(true);
+    const base = { champ:'Darius', champ_icon:DDV+'champion/Darius.png', opp:'Garen', opp_icon:DDV+'champion/Garen.png', role:'Top', wr:53, style:'Agressif',
+      hint:'Maintain your passive stacks and hit Garen at the edge of Decimate [Q].', loading:false,
+      build:[it(3142,(EN?"Youmuu's Ghostblade":''+(EN?"Youmuu's Ghostblade":'Lame spectre de Youmuu')+''),false), it(3047,(EN?'Plated Steelcaps':''+(EN?'Plated Steelcaps':'Coques en acier')+''),false), it(3742,(EN?"Dead Man's Plate":''+(EN?"Dead Man's Plate":'Plaque du mort')+''),false), it(6333,(EN?"Death's Dance":''+(EN?"Death's Dance":'Danse de la mort')+''),false)] };
+    const steps = [
+      { ...base, loading:true, build:[], tips:[] },
+      { ...base, next:base.build[0], missing:2500, tips:[{text:'Niv 1-3 : force les trades',kind:'lane',prio:60},{text:'3 AP en face : '+(EN?"Mercury's Treads":'Sandales de Mercure')+'',kind:'item',prio:35},{text:'Matchup : jeu agressif',kind:'info',prio:25}] },
+      { ...base, next:base.build[0], missing:1900, tips:[{text:'Garen mort 18s : push + plates',kind:'lane',prio:85},{text:'3 soigneurs : '+(EN?'Chempunk Chainsword':'Épée dentelée chimico-punk')+'',kind:'item',prio:45},{text:'Tu mènes : freeze, prive-le de farm',kind:'lane',prio:40}] },
+      { ...base, next:base.build[0], missing:1600, tips:[{text:'Garen a son ulti : prudence',kind:'danger',prio:80},{text:'Égal : trade quand il last-hit',kind:'lane',prio:40}] },
+      { ...base, next:base.build[0], missing:0, tips:[{text:'Recall : '+(EN?"Youmuu's Ghostblade":'Lame spectre de Youmuu')+'',kind:'item',prio:72},{text:'Avantage : slow push puis plates',kind:'lane',prio:40}] },
+      { ...base, build:[it(3142,(EN?"Youmuu's Ghostblade":''+(EN?"Youmuu's Ghostblade":'Lame spectre de Youmuu')+''),true), it(3047,(EN?'Plated Steelcaps':''+(EN?'Plated Steelcaps':'Coques en acier')+''),true), it(3742,(EN?"Dead Man's Plate":''+(EN?"Dead Man's Plate":'Plaque du mort')+''),false), it(6333,(EN?"Death's Dance":''+(EN?"Death's Dance":'Danse de la mort')+''),false)], next:it(3742,(EN?"Dead Man's Plate":''+(EN?"Dead Man's Plate":'Plaque du mort')+''),false), missing:1200,
+        tips:[{text:'Nashor dans 40s : vision',kind:'obj',prio:55},{text:'Prochain : '+(EN?"Dead Man's Plate":'Plaque du mort')+' (-1200 po)',kind:'item',prio:20}] },
+    ];
+    emit('lol', steps[lolStep++ % steps.length]);
+  }
+  function game(on) { emit('game', on ? { running:LOL, last:LOL } : { running:null, last:{...LOL, last:Date.now()-2*3600000} }); }
+  const SP = { connected:true, volume:64, device:'Spotifast', supports_volume:true, error:null, shuffle:true, repeat:'context' };
+  const MIX = { devices: [
+      {id:'d1',name:(EN?'Speakers':'Haut-parleurs')+' · Realtek(R) Audio',volume:0.42,muted:false,default:true},
+      {id:'d2',name:(EN?'Headset':'Casque')+' · Arctis 7 Game',volume:0.8,muted:false,default:false}],
+    apps: [
+            {key:'spotify',name:'Spotify',volume:0.7,muted:false,active:true,icon:null},
+      {key:'chrome',name:'Google Chrome',volume:1,muted:false,active:true,icon:null},
+      {key:'discord',name:'Discord',volume:0.55,muted:true,active:false,icon:null}] };
+</script>
+<script>
+  // charge l'UI dans le cadre 640x340
+  fetch('../ui/index.html').then(r=>r.text()).then(h=>{
+    const body = h.split('<body>')[1].split('<script')[0];
+    document.getElementById('frame').innerHTML = body;
+    for (const s of ['../ui/i18n-en.js','../ui/i18n.js','../ui/icons.js','../ui/app.js']) { const el=document.createElement('script'); el.src=s; el.async=false; if (s.endsWith('app.js')) el.onload=()=>setTimeout(runScene,600); document.body.appendChild(el); }
+  });
+
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  function avatar(l, a, b) { const c=document.createElement('canvas');c.width=c.height=96;const g=c.getContext('2d');const gr=g.createLinearGradient(0,0,96,96);gr.addColorStop(0,a);gr.addColorStop(1,b);g.fillStyle=gr;g.fillRect(0,0,96,96);g.fillStyle='rgba(255,255,255,.95)';g.font='600 46px Segoe UI, sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(l,48,52);return c.toDataURL(); }
+  const pickTool = (t) => document.querySelector(`[data-tool="${t}"]`).click();
+  const SCENES = {
+    lyrics: async () => { music(true); await wait(2600); },
+    player: async () => { music(true); hov(true); await wait(2200); },
+    live: async () => { both(); await wait(1500); },
+    otp: async () => { emit('secret',{source:'gmail',from:'Google',subject:'x',code:'482913',link:null,copied:true}); await wait(1500); },
+    notif: async () => { emit('notification',{id:2,app:'WhatsApp',title:EN?'Mom':'Maman',body:EN?'What time are you coming home?':'Tu rentres à quelle heure ?',icon:null,phone:true}); await wait(1500); },
+    discord: async () => { // salon vocal en compact, avec une musique en 2e activité (flèches + points)
+      music(true); await wait(700);
+      emit('discord',{channel:{id:'42',name:EN?'⭐ · The regulars':'⭐ · Les actifs',guild:EN?'The crew':'La team'},me:'0',mute:false,deaf:false,
+        members:[{id:'0',name:'Sam',avatar:avatar('S','#5865f2','#9b84ff'),speaking:false},{id:'1',name:'Lucas',avatar:avatar('L','#f0a35e','#e8556d'),speaking:true},{id:'2',name:'Inès',avatar:avatar('I','#3ecf8e','#1f8fbf'),speaking:false}]});
+      await wait(1600); },
+    home: async () => { hov(true); await wait(1600); },
+    mixer: async () => { hov(true); await wait(900); pickTool('volume'); await wait(1500); },
+    download: async () => { hov(true); await wait(900); pickTool('grab'); await wait(1600); },
+    music: async () => { hov(true); await wait(900); pickTool('music'); await wait(1600); },
+    lol: async () => { lol(); lol(); hov(true); await wait(2500); },
+    lolcompact: async () => { lol(); lol(); await wait(1800); },
+    qr: async () => { emit('screenshot',{id:77,path:'C:/x.png',thumb:shot(),width:1920,height:1080}); await wait(600); emit('shot_info',{id:77,text:'Hello',qr:'https://www.example.com/promo?x=1'}); await wait(1500); },
+    battery: async () => { emit('iphone',{connected:true,name:'iPhone',battery:76,charging:true,full:false,error:null}); await wait(1800); },
+  };
+  async function runScene() {
+    if (!SCENE || !SCENES[SCENE]) return;
+    // captures : les alertes passagères restent plus longtemps, le temps de les photographier
+    const push = pushTransient;
+    pushTransient = (k, d, ms) => push(k, d, ms * 4);
+    await SCENES[SCENE]();
+    window.__sceneDone = true;
+  }
+</script>
+</body></html>

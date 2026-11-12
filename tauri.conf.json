@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "WowIsland",
+  "version": "0.1.0",
+  "identifier": "ma.belius.wowisland",
+  "build": {
+    "frontendDist": "ui"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "island",
+        "url": "index.html",
+        "title": "WowIsland",
+        "width": 640,
+        "height": 470,
+        "transparent": true,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "resizable": false,
+        "shadow": false,
+        "visible": false,
+        "focus": false,
+        "maximizable": false,
+        "minimizable": false,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection,Translate,msEdgeTranslate,AutofillServerCommunication,msEdgeShopping,SpareRendererForSitePerProcess --disable-background-networking --disable-component-update --disable-sync --disable-default-apps --disable-extensions --no-pings --renderer-process-limit=1 --js-flags=--max-old-space-size=96"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "icon": [
+      "icons/icon.png",
+      "icons/icon.ico"
+    ]
+  }
+}

@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Réglages</title>
+  <style>
+    :root {
+      --bg: #141417; --card: #1e1e22; --card2: #26262b; --line: rgba(255,255,255,.08);
+      --fg: #f5f5f7; --fg2: rgba(255,255,255,.6); --fg3: rgba(255,255,255,.38);
+      --blue: #0a84ff; --green: #30d158; --red: #ff453a;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(1200px 500px at 50% -200px, #23232b, var(--bg));
+      color: var(--fg); min-height: 100vh;
+      font: 14px/1.45 "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased; padding: 28px 24px 40px;
+    }
+    header { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; }
+    .logo { width: 54px; height: 54px; border-radius: 15px; background: linear-gradient(145deg,#3a3a48,#141418); display: grid; place-items: center; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+    .logo i { display: block; width: 36px; height: 13px; border-radius: 7px; background: #000; position: relative; }
+    .logo i::after { content: ""; position: absolute; right: 4px; top: 3.5px; width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+    h1 { font: 600 22px "Segoe UI Variable Display", "Segoe UI", sans-serif; letter-spacing: -.01em; }
+    .sub { color: var(--fg2); font-size: 13px; }
+    h2 { font-size: 12px; font-weight: 600; color: var(--fg3); text-transform: uppercase; letter-spacing: .08em; margin: 26px 4px 10px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 13px 16px; }
+    .row + .row { border-top: 1px solid var(--line); }
+    .row .t { font-weight: 550; }
+    .row .d { color: var(--fg2); font-size: 12.5px; }
+    .acc { display: flex; align-items: center; gap: 12px; }
+    .acc .av { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(145deg,#ea4335,#fbbc05); display: grid; place-items: center; font-weight: 700; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fg3); display: inline-block; margin-right: 6px; }
+    .dot.ok { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .dot.err { background: var(--red); }
+    input[type=email], input[type=password], input[type=text], textarea {
+      width: 100%; background: var(--card2); border: 1px solid var(--line); color: var(--fg);
+      border-radius: 10px; padding: 10px 12px; font: inherit; outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    input:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(10,132,255,.25); }
+    textarea { resize: vertical; min-height: 64px; }
+    .form { padding: 16px; display: grid; gap: 10px; }
+    .btn { height: 36px; padding: 0 16px; border-radius: 10px; border: 0; font: 600 13.5px inherit; font-family: inherit; cursor: pointer; transition: filter .2s, transform .15s; }
+    .btn:active { transform: scale(.97); }
+    .btn.primary { background: var(--blue); color: #fff; }
+    .btn.primary:hover { filter: brightness(1.12); }
+    .btn.ghost { background: rgba(255,255,255,.08); color: var(--fg); }
+    .btn.danger { background: rgba(255,69,58,.14); color: var(--red); height: 30px; padding: 0 12px; }
+    .btn:disabled { opacity: .5; cursor: progress; }
+    .msg { font-size: 12.5px; min-height: 18px; }
+    .msg.err { color: var(--red); } .msg.ok { color: var(--green); }
+    .help { color: var(--fg2); font-size: 12.5px; padding: 0 16px 16px; }
+    .help ol { padding-left: 18px; display: grid; gap: 3px; }
+    a { color: var(--blue); text-decoration: none; cursor: pointer; }
+    a:hover { text-decoration: underline; }
+    /* interrupteur */
+    .sw { position: relative; flex: none; width: 44px; height: 26px; }
+    .sw input { position: absolute; opacity: 0; inset: 0; cursor: pointer; z-index: 1; }
+    .sw span { position: absolute; inset: 0; border-radius: 13px; background: rgba(255,255,255,.16); transition: background .25s; }
+    .sw span::after { content: ""; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.35); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+    .sw input:checked + span { background: var(--green); }
+    .sw input:checked + span::after { transform: translateX(18px); }
+    .empty { padding: 14px 16px; color: var(--fg3); }
+    .count { color: var(--fg3); font-weight: 500; text-transform: none; letter-spacing: 0; margin-left: 6px; }
+    .addrow { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--line); color: var(--blue); font-weight: 600; cursor: pointer; }
+    .addrow:hover { background: rgba(255,255,255,.03); }
+    .addrow .plus { width: 34px; height: 34px; border-radius: 50%; border: 1.5px dashed rgba(10,132,255,.6); display: grid; place-items: center; font-size: 20px; font-weight: 400; }
+    .hide { display: none !important; }
+    .diag { display: grid; gap: 8px; padding: 14px 16px; }
+    .diag div { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .diag span:last-child { color: var(--fg2); font-size: 13px; text-align: right; }
+    .tag { font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 9px; background: rgba(255,255,255,.08); color: var(--fg2); }
+    .diag span.tag.ok { background: rgba(48,209,88,.15); color: var(--green); }
+    .diag span.tag.err { background: rgba(255,69,58,.15); color: var(--red); }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 16px 16px; }
+    .actions:not(:has(.btn:not(.hide))) { padding-bottom: 0; }
+    code { background: var(--card2); padding: 1px 6px; border-radius: 6px; font: 12px Consolas, monospace; color: var(--fg); user-select: all; }
+    footer { margin-top: 28px; text-align: center; color: var(--fg3); font-size: 12px; }
+    .lang { margin-left: auto; display: flex; padding: 3px; gap: 2px; border-radius: 11px; background: var(--card); border: 1px solid var(--line); }
+    .lang button { height: 28px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--fg2); font: 600 12.5px inherit; font-family: inherit; cursor: pointer; }
+    .lang button.on { background: var(--card2); color: var(--fg); box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+    .warn { margin: 0 16px 16px; padding: 10px 12px; border-radius: 10px; background: rgba(255,159,10,.1); border: 1px solid rgba(255,159,10,.3); color: #ffd28a; font-size: 12.5px; }
+    .row input[type=text].inline { width: 260px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><i></i></div>
+    <div>
+      <h1>WowIsland</h1>
+      <div class="sub">Musique, codes Gmail, iPhone et notifications — en haut de ton écran.</div>
+    </div>
+    <div class="lang" id="lang" data-noi18n><button data-lang="fr">Français</button><button data-lang="en">English</button></div>
+  </header>
+
+  <h2>Comptes Gmail<span class="count" id="acc-count"></span></h2>
+  <div class="card">
+    <div id="accounts"></div>
+    <div class="addrow hide" id="addrow"><div class="plus">+</div>Ajouter un autre compte Gmail</div>
+    <div class="form" id="form" style="border-top:1px solid var(--line)">
+      <input type="email" id="email" placeholder="adresse@gmail.com" autocomplete="off" />
+      <input type="password" id="pass" placeholder="Mot de passe d'application (16 lettres)" autocomplete="off" />
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="btn primary" id="add">Connecter</button>
+        <button class="btn ghost hide" id="cancel">Annuler</button>
+        <div class="msg" id="msg"></div>
+      </div>
+    </div>
+    <div class="help">
+      <ol>
+        <li>Active la <a data-url="https://myaccount.google.com/signinoptions/twosv">validation en deux étapes</a> sur ton compte Google.</li>
+        <li>Crée un <a data-url="https://myaccount.google.com/apppasswords">mot de passe d'application</a> (nom : « WowIsland »).</li>
+        <li>Colle-le ici. Il est chiffré avec ta session Windows (DPAPI), jamais stocké en clair.</li>
+        <li>Ajoute autant de comptes que tu veux : chacun a son propre mot de passe d'application.</li>
+      </ol>
+    </div>
+  </div>
+
+  <h2>Codes de vérification</h2>
+  <div class="card">
+    <div class="row"><div><div class="t">Copier automatiquement le code</div><div class="d">Le code apparaît dans l'island et il est déjà dans ton presse-papiers : tu n'as plus qu'à coller.</div></div><label class="sw"><input type="checkbox" data-k="auto_copy_otp"><span></span></label></div>
+    <div class="row"><div><div class="t">Effacer le code après 90 s</div><div class="d">Vide le presse-papiers s'il contient encore le code.</div></div><label class="sw"><input type="checkbox" data-k="clear_otp_clipboard"><span></span></label></div>
+    <div class="row"><div><div class="t">Afficher tous les nouveaux mails</div><div class="d">Pas seulement ceux qui contiennent un code.</div></div><label class="sw"><input type="checkbox" data-k="show_all_mails"><span></span></label></div>
+  </div>
+
+  <h2>Notifications</h2>
+  <div class="card">
+    <div class="row"><div><div class="t">Notifications seulement dans l'île</div><div class="d">Décoche « bannières » et « centre de notifications » de Windows pour toutes les applis (remis comme avant si tu désactives). Effet complet au prochain démarrage du PC.</div></div><label class="sw"><input type="checkbox" data-k="notif_island_only"><span></span></label></div>
+    <div class="row"><div><div class="t">Son de notification doux</div><div class="d">Remplace le son de notification de Windows par un carillon. <a href="#" id="notif-preview">Écouter</a></div></div><label class="sw"><input type="checkbox" data-k="notif_sound"><span></span></label></div>
+    <div class="row"><div><div class="t">Notifications du PC</div><div class="d">Discord, WhatsApp, Teams… Les notifs de l'iPhone passent par « Lien avec le téléphone ».</div></div><label class="sw"><input type="checkbox" data-k="show_pc_notifications"><span></span></label></div>
+    <div class="row" style="display:block">
+      <div class="t" style="margin-bottom:8px">Applis ignorées</div>
+      <textarea id="block" placeholder="Une appli par ligne, ex. : Microsoft Edge"></textarea>
+    </div>
+    <div class="row"><div><div class="t">Accès aux notifications Windows</div><div class="d">À autoriser si les notifs n'apparaissent pas.</div></div><button class="btn ghost" id="notifset">Ouvrir</button></div>
+  </div>
+
+  <h2>Spotify · volume de l'appli</h2>
+  <div class="card">
+    <div class="row">
+      <div class="acc"><div class="av" style="background:linear-gradient(145deg,#1ed760,#0f7a37)">♪</div><div><div class="t">Volume de Spotify dans l'île</div><div class="d"><span class="dot" id="sp-dot"></span><span id="sp-state">…</span></div></div></div>
+      <button class="btn danger hide" id="sp-off">Déconnecter</button>
+    </div>
+    <div class="form" id="sp-form" style="border-top:1px solid var(--line)">
+      <input type="text" id="sp-id" placeholder="Client ID de ton appli Spotify (32 caractères)" autocomplete="off" spellcheck="false" />
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="btn primary" id="sp-connect">Connecter Spotify</button>
+        <div class="msg" id="sp-msg"></div>
+      </div>
+    </div>
+    <div class="help">
+      <ol>
+        <li>Optionnel : sans ça, la musique s'affiche quand même dans l'île. Ça ajoute seulement le réglage du volume <b>de Spotify</b> (ou de Spotifast) depuis l'île.</li>
+        <li>Ouvre le <a data-url="https://developer.spotify.com/dashboard">tableau de bord Spotify Developer</a>, connecte-toi et crée une appli (<b>Create app</b>, n'importe quel nom, coche <b>Web API</b>). Si tu en as déjà une (pour Spotifast par exemple), réutilise-la.</li>
+        <li>Dans <b>Settings → Redirect URIs</b>, ajoute <code id="sp-redirect">http://127.0.0.1:8990/callback</code> et enregistre.</li>
+        <li>Copie son <b>Client ID</b> ici puis clique sur « Connecter Spotify » et accepte dans le navigateur.</li>
+        <li>Le curseur sous la musique règle alors le volume <b>dans Spotify</b> (comme son propre curseur), pas celui de Windows. Seul un jeton de renouvellement est gardé, chiffré avec ta session Windows.</li>
+      </ol>
+    </div>
+  </div>
+
+  <h2>Discord · salon vocal</h2>
+  <div class="card">
+    <div class="row">
+      <div class="acc"><div class="av" style="background:linear-gradient(145deg,#7c86ff,#4752c4)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4.5 10v4M8.5 7v10M12.5 4.5v15M16.5 8v8M20.5 10.5v3"/></svg></div><div><div class="t">Salon vocal dans l'île</div><div class="d"><span class="dot" id="dc-dot"></span><span id="dc-state">…</span></div></div></div>
+      <button class="btn danger hide" id="dc-off">Déconnecter</button>
+    </div>
+    <div class="form" id="dc-form" style="border-top:1px solid var(--line)">
+      <input type="text" id="dc-id" placeholder="Client ID (Application ID) de ton appli Discord" autocomplete="off" spellcheck="false" />
+      <input type="password" id="dc-secret" placeholder="Client Secret" autocomplete="off" spellcheck="false" />
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="btn primary" id="dc-connect">Connecter Discord</button>
+        <div class="msg" id="dc-msg"></div>
+      </div>
+    </div>
+    <div class="help">
+      <ol>
+        <li>Optionnel : affiche ton salon vocal Discord dans l'île. Discord ne le permet qu'avec une appli développeur à toi (gratuit, 2 minutes).</li>
+        <li>Ouvre le <a data-url="https://discord.com/developers/applications">portail développeur Discord</a>, clique sur <b>New Application</b> (n'importe quel nom) ou ouvre une appli existante.</li>
+        <li>Dans <b>OAuth2 → Redirects</b>, ajoute <code id="dc-redirect">http://localhost</code> et enregistre.</li>
+        <li>Copie le <b>Client ID</b> et le <b>Client Secret</b> (OAuth2) ici, garde l'appli Discord ouverte sur le PC, puis clique sur « Connecter Discord » et accepte la fenêtre <b>Autoriser</b> qui s'affiche dans Discord.</li>
+        <li>Ensuite l'île montre ton salon vocal (serveur, groupe ou appel privé) : qui est là, qui parle, et des boutons pour couper le micro, le son, ou quitter. Le secret et le jeton sont chiffrés avec ta session Windows.</li>
+      </ol>
+    </div>
+  </div>
+
+  <h2>Télécharger · vidéos, musique, GIF</h2>
+  <div class="card">
+    <div class="help" style="padding-top:14px">
+      <ol>
+        <li>Bouton <b>Télécharger</b> de l'île : colle un lien (YouTube, TikTok, Instagram, X, Reddit, Twitch… et des centaines d'autres sites). Si tu viens de copier un lien, l'île le propose toute seule.</li>
+        <li>Choisis <b>Vidéo</b> (qualité), <b>MP3</b>, <b>GIF</b> ou <b>Texte</b> (transcription), et éventuellement un <b>extrait</b>. Pour un mix YouTube, choisis le nombre de titres : ceux déjà dans Ma musique sont sautés.</li>
+        <li>La première fois, l'île installe les outils nécessaires depuis leurs pages officielles (yt-dlp, ffmpeg, Deno, environ 150 Mo) puis les met à jour toute seule.</li>
+        <li>Les fichiers vont dans <code>Téléchargements\Île</code>. Liens Spotify / Deezer : chaque titre est retrouvé sur YouTube et enregistré en MP3 avec sa pochette. Les contenus protégés (Netflix, Disney+…) sont impossibles.</li>
+        <li>Sur chaque téléchargement : <b>Ma musique</b> (le lecteur de l'île), <b>Spotify</b> (dossier des fichiers locaux), <b>📱</b> (envoi sur le tel, voir ci-dessous).</li>
+      </ol>
+    </div>
+    <div class="warn">Ne télécharge que ce que tu as le droit de télécharger : tes propres contenus, ceux sous licence libre ou ceux que l'auteur permet de télécharger.</div>
+  </div>
+
+  <h2>Envoyer sur le tel · LocalSend</h2>
+  <div class="card">
+    <div class="row">
+      <div class="acc"><div class="av" style="background:linear-gradient(145deg,#4fd8c9,#13867a)">📱</div><div><div class="t">Appareil choisi</div><div class="d" id="ls-state">…</div></div></div>
+      <button class="btn danger hide" id="ls-forget">Oublier</button>
+    </div>
+    <div class="help">
+      <ol>
+        <li>Installe <a data-url="https://localsend.org/download">LocalSend</a> sur ton tel (App Store / Play Store, gratuit et open source). Rien à installer sur le PC : l'île parle LocalSend toute seule.</li>
+        <li>Le tel et le PC doivent être sur le <b>même réseau</b> (le PC peut être en Ethernet sur la même box). Ouvre LocalSend sur le tel.</li>
+        <li>Dans <b>Télécharger</b>, clique sur <b>📱</b> à côté d'un fichier. La première fois, choisis ton tel dans la liste : l'île s'en souvient.</li>
+        <li>Accepte sur le tel (ou active la <b>réception rapide</b> dans les réglages de LocalSend pour ne plus avoir à accepter). Clic droit sur 📱 : choisir un autre appareil.</li>
+      </ol>
+    </div>
+  </div>
+
+  <h2>Claude Code</h2>
+  <div class="card">
+    <div class="row" style="display:block">
+      <div class="t" style="margin-bottom:8px">Dossier de travail</div>
+      <input type="text" id="claude-dir" placeholder="Documents (par défaut)" autocomplete="off" spellcheck="false" />
+    </div>
+    <div class="help" style="border-top:1px solid var(--line);padding-top:14px">
+      <ol>
+        <li>Le bouton <b>Claude Code</b> de l'île ouvre une mini-session de Claude Code, l'assistant d'Anthropic. Il faut un abonnement Claude (Pro ou Max) ou un compte API.</li>
+        <li>Installe <a data-url="https://docs.anthropic.com/en/docs/claude-code/setup">Claude Code</a> sur le PC, puis connecte-toi avec le bouton <b>Se connecter</b> de l'île (ou la commande <code>claude</code> une fois dans un terminal).</li>
+        <li>L'île affiche aussi tes quotas d'utilisation (lus avec la connexion de Claude Code, jamais copiés ailleurs).</li>
+      </ol>
+    </div>
+    <div class="warn">Claude y travaille en mode « tout autorisé » : il peut créer, modifier ou supprimer des fichiers et lancer des commandes <b>sans demander</b>, dans le dossier de travail ci-dessus. Choisis un dossier où ce n'est pas grave.</div>
+  </div>
+
+  <h2>Jeux · coach League of Legends</h2>
+  <div class="card">
+    <div class="help" style="padding-top:14px">
+      <ol>
+        <li>Rien à régler : l'île reconnaît le jeu lancé (Steam, Epic, Riot, jeux locaux…) et affiche son logo et ton temps de jeu. Au repos, elle propose de relancer le dernier jeu joué.</li>
+        <li>En partie de <b>League of Legends</b>, l'île lit l'état de la partie avec l'API locale officielle de Riot et les stats publiques d'OP.GG : un conseil court qui change selon la partie, et au survol le matchup et le build.</li>
+        <li>Pour que l'île reste visible pendant que tu joues, désactive « Masquer en plein écran » ci-dessous ou joue en <b>fenêtré sans bordure</b>.</li>
+      </ol>
+    </div>
+  </div>
+
+  <h2>Général</h2>
+  <div class="card">
+    <div class="row"><div><div class="t">Masquer en plein écran</div><div class="d">Jeux, vidéos, présentations (les codes restent affichés).</div></div><label class="sw"><input type="checkbox" data-k="hide_in_fullscreen"><span></span></label></div>
+    <div class="row"><div><div class="t">Volume et luminosité dans l'île</div><div class="d">Les touches volume s'affichent dans l'île (à la place du cadre Windows).</div></div><label class="sw"><input type="checkbox" data-k="osd"><span></span></label></div>
+    <div class="row"><div><div class="t">Paroles dans l'île compacte</div><div class="d">Affiche la ligne en cours à la place du titre (si les paroles existent).</div></div><label class="sw"><input type="checkbox" data-k="lyrics_compact"><span></span></label></div>
+    <div class="row"><div><div class="t">Lancer au démarrage de Windows</div></div><label class="sw"><input type="checkbox" data-k="autostart"><span></span></label></div>
+    <div class="row"><div><div class="t">Relancer WowIsland</div><div class="d">Recharge l'appli (aussi dans le clic droit de l'icône près de l'horloge).</div></div><button class="btn ghost" id="restart">Relancer</button></div>
+  </div>
+
+  <h2>Boutons de l'île</h2>
+  <div class="card">
+    <div class="row"><div><div class="t">Capturer une zone</div></div><label class="sw"><input type="checkbox" data-tool-k="region"><span></span></label></div>
+    <div class="row"><div><div class="t">Capturer l'écran</div></div><label class="sw"><input type="checkbox" data-tool-k="full"><span></span></label></div>
+    <div class="row"><div><div class="t">Minuteur</div></div><label class="sw"><input type="checkbox" data-k="show_timer"><span></span></label></div>
+    <div class="row"><div><div class="t">Volume</div><div class="d">Volume des sorties et de chaque appli.</div></div><label class="sw"><input type="checkbox" data-tool-k="volume"><span></span></label></div>
+    <div class="row"><div><div class="t">Presse-papiers</div></div><label class="sw"><input type="checkbox" data-tool-k="clip"><span></span></label></div>
+    <div class="row"><div><div class="t">Notifications</div></div><label class="sw"><input type="checkbox" data-tool-k="notifs"><span></span></label></div>
+    <div class="row"><div><div class="t">Télécharger</div><div class="d">Vidéos et musiques depuis un lien.</div></div><label class="sw"><input type="checkbox" data-tool-k="grab"><span></span></label></div>
+    <div class="row"><div><div class="t">Ma musique</div><div class="d">Le lecteur de tes MP3 (dossier Musique\Spotify (Île) et Téléchargements\Île).</div></div><label class="sw"><input type="checkbox" data-tool-k="music"><span></span></label></div>
+    <div class="row"><div><div class="t">Claude Code</div></div><label class="sw"><input type="checkbox" data-tool-k="claude"><span></span></label></div>
+    <div class="row"><div><div class="t">Réglages</div><div class="d">Toujours affiché (sinon tu ne pourrais plus revenir ici depuis l'île).</div></div><label class="sw"><input type="checkbox" checked disabled><span></span></label></div>
+  </div>
+
+  <h2>iPhone</h2>
+  <div class="card">
+    <div class="diag" id="diag">
+      <div><span>Connexion USB Apple (usbmuxd)</span><span id="d-service" class="tag">…</span></div>
+      <div><span>iPhone branché en USB</span><span id="d-usb" class="tag">…</span></div>
+      <div><span>Appareils Apple (batterie)</span><span id="d-apple" class="tag">…</span></div>
+      <div><span>Lien avec le téléphone (notifs)</span><span id="d-link" class="tag">…</span></div>
+      <div><span>État</span><span id="d-state">…</span></div>
+    </div>
+    <div class="actions">
+      <button class="btn primary hide" id="repair">Réparer le service (admin)</button>
+      <button class="btn ghost hide" id="get-apple"data-url="ms-windows-store://pdp/?productid=9NP83LWLPZ9K">Installer Appareils Apple</button>
+      <button class="btn primary hide" id="open-link">Ouvrir Lien avec le téléphone</button>
+      <button class="btn ghost hide" id="get-link" data-url="ms-windows-store://pdp/?productid=9NMPJ99VJBWV">Installer Lien avec le téléphone</button>
+      <div class="msg" id="d-msg" style="align-self:center"></div>
+    </div>
+    <div class="help" style="border-top:1px solid var(--line);padding-top:14px">
+      <ol>
+        <li><b>Batterie en USB :</b> installe <a data-url="ms-windows-store://pdp/?productid=9NP83LWLPZ9K">Appareils Apple</a> (Microsoft Store), branche l'iPhone et appuie sur « Faire confiance ».</li>
+        <li><b>Notifications de l'iPhone :</b> elles passent par l'appli <b>Lien avec le téléphone</b>, qui doit tourner (en arrière-plan). Ouvre-la, associe l'iPhone (QR code + appli « Lien avec Windows »), puis sur l'iPhone : <i>Réglages → Bluetooth → ton PC → (i)</i> et active <b>Afficher les notifications</b> et <b>Partager les notifications système</b>. Dans les réglages de Lien avec le téléphone, laisse « Démarrer à l'ouverture de session » activé. iPhone verrouillé ou non, ça marche pareil.</li>
+        <li><b>N'afficher que l'island :</b> dans <a data-url="ms-settings:notifications">Paramètres → Système → Notifications</a>, clique sur <b>Mobile connecté</b> (Lien avec le téléphone) et décoche seulement <b>Afficher les bannières de notification</b> (et le son si tu veux). Laisse les notifications <b>activées</b> et « Afficher dans le centre de notifications » coché : c'est là que l'island les lit.</li>
+      </ol>
+    </div>
+  </div>
+
+  <footer>Clic droit sur une alerte pour la fermer · Survole l'island pour l'ouvrir</footer>
+
+  <script src="i18n-en.js"></script>
+  <script src="i18n.js"></script>
+  <script>
+    const { invoke } = window.__TAURI__.core;
+    const $ = (id) => document.getElementById(id);
+    let s = null;
+
+    const esc = (x) => String(x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    let adding = false;
+    function showForm(on) {
+      adding = on;
+      const has = !!(s && s.accounts.length);
+      $("form").classList.toggle("hide", has && !on);
+      $("addrow").classList.toggle("hide", !has || on);
+      $("cancel").classList.toggle("hide", !has);
+      if (on) $("email").focus();
+    }
+    $("addrow").onclick = () => showForm(true);
+    $("cancel").onclick = () => { $("msg").textContent = ""; showForm(false); };
+    $("restart").onclick = () => invoke("restart_app");
+    $("notif-preview").onclick = (e) => { e.preventDefault(); invoke("notif_sound_preview"); };
+
+    async function diag() {
+      try {
+        const d = await invoke("iphone_diag");
+        const tag = (id, ok, yes, no) => { const el = $(id); el.className = "tag " + (ok ? "ok" : "err"); el.textContent = ok ? yes : no; };
+        tag("d-service", d.service === "running", "Démarré", d.service === "missing" ? "Absent" : "Arrêté");
+        const u = $("d-usb"); u.className = "tag " + (d.usb_present ? "ok" : ""); u.textContent = d.usb_present ? "Détecté" : "Non branché";
+        tag("d-apple", d.apple_devices_installed, "Installé", "Manquant");
+        tag("d-link", d.phone_link_installed && d.phone_link_running, "Lancé", d.phone_link_installed ? "Pas lancé" : "Manquant");
+        $("open-link").classList.toggle("hide", !d.phone_link_installed || d.phone_link_running);
+        if (d.phone_link_installed && !d.phone_link_ever_notified) {
+          $("d-link").title = "Lien avec le téléphone n'a encore jamais affiché de notification sur ce PC : associe l'iPhone dans l'appli et active « Afficher les notifications » sur l'iPhone.";
+          if (d.phone_link_running) { $("d-link").className = "tag err"; $("d-link").textContent = "Aucune notif reçue"; }
+        } else $("d-link").title = "";
+        const l = d.last || {};
+        $("d-state").textContent = l.connected && l.battery != null
+          ? `${l.name || "iPhone"} · ${l.battery}%${l.charging ? " · en charge" : ""}`
+          : l.error || (d.usb_present ? "En attente de l'iPhone…" : "Branche ton iPhone en USB");
+        $("repair").classList.toggle("hide", d.service !== "stopped");
+        $("get-apple").classList.toggle("hide", d.apple_devices_installed);
+        $("repair").dataset.admin = d.apple_devices_installed ? "0" : "1";
+        $("repair").textContent = d.apple_devices_installed ? "Démarrer la connexion iPhone" : "Réparer le service (admin)";
+        $("get-link").classList.toggle("hide", d.phone_link_installed);
+      } catch (e) { $("d-state").textContent = String(e); }
+    }
+    $("repair").onclick = async () => {
+      const m = $("d-msg");
+      try {
+        await invoke("repair_iphone_service");
+        m.className = "msg"; m.textContent = $("repair").dataset.admin === "1" ? "Accepte la fenêtre administrateur…" : "Démarrage…";
+        setTimeout(() => { m.textContent = ""; diag(); }, 6000);
+      } catch (e) { m.className = "msg err"; m.textContent = String(e); }
+    };
+    $("open-link").onclick = () => invoke("open_phone_link").then(() => setTimeout(diag, 4000)).catch((e) => { $("d-msg").className = "msg err"; $("d-msg").textContent = String(e); });
+    diag();
+    setInterval(() => { if (!document.hidden) diag(); }, 4000);
+
+    async function spInfo() {
+      try {
+        const i = await invoke("spotify_info");
+        $("sp-redirect").textContent = i.redirect_uri;
+        if (!$("sp-id").value) $("sp-id").value = i.client_id || "";
+        $("sp-dot").className = "dot " + (i.connected ? "ok" : "");
+        $("sp-state").textContent = i.connected ? "Connecté" : "Non connecté";
+        $("sp-off").classList.toggle("hide", !i.connected);
+        $("sp-connect").textContent = i.connected ? "Reconnecter" : "Connecter Spotify";
+        if (i.connected) {
+          const st = await invoke("spotify_state").catch(() => null);
+          if (st && st.error) { $("sp-dot").className = "dot err"; $("sp-state").textContent = st.error; }
+          else if (st && st.device) $("sp-state").textContent = `Connecté · ${st.device}${st.volume != null ? ` · ${st.volume}%` : ""}`;
+        }
+      } catch (e) { $("sp-state").textContent = String(e); }
+    }
+    $("sp-connect").onclick = async () => {
+      const btn = $("sp-connect"), msg = $("sp-msg");
+      btn.disabled = true; msg.className = "msg"; msg.textContent = "Accepte dans le navigateur qui vient de s'ouvrir…";
+      try {
+        await invoke("spotify_connect", { clientId: $("sp-id").value.trim() });
+        msg.className = "msg ok"; msg.textContent = "Connecté ✓";
+      } catch (e) { msg.className = "msg err"; msg.textContent = String(e); }
+      finally { btn.disabled = false; spInfo(); }
+    };
+    $("sp-off").onclick = async () => { await invoke("spotify_disconnect"); $("sp-msg").textContent = ""; spInfo(); };
+    spInfo();
+
+    async function dcInfo() {
+      try {
+        const i = await invoke("discord_info");
+        $("dc-redirect").textContent = i.redirect_uri;
+        if (!$("dc-id").value) $("dc-id").value = i.client_id || "";
+        $("dc-secret").placeholder = i.has_secret ? "Client Secret (déjà enregistré, laisse vide pour le garder)" : "Client Secret";
+        const v = i.live ? await invoke("discord_state").catch(() => null) : null;
+        $("dc-dot").className = "dot " + (i.live ? "ok" : i.error && i.linked ? "err" : "");
+        $("dc-state").textContent = i.live
+          ? (v && v.channel ? `Connecté · dans « ${v.channel.name} »` : "Connecté · pas dans un salon vocal")
+          : i.linked ? (i.error || "Connecté · en attente de l'appli Discord") : "Non connecté";
+        $("dc-off").classList.toggle("hide", !i.linked);
+        $("dc-connect").textContent = i.linked ? "Reconnecter" : "Connecter Discord";
+      } catch (e) { $("dc-state").textContent = String(e); }
+    }
+    $("dc-connect").onclick = async () => {
+      const btn = $("dc-connect"), msg = $("dc-msg");
+      btn.disabled = true; msg.className = "msg"; msg.textContent = "Accepte la fenêtre « Autoriser » dans Discord…";
+      try {
+        await invoke("discord_connect", { clientId: $("dc-id").value.trim(), secret: $("dc-secret").value });
+        $("dc-secret").value = "";
+        msg.className = "msg ok"; msg.textContent = "Connecté ✓";
+      } catch (e) { msg.className = "msg err"; msg.textContent = String(e); }
+      finally { btn.disabled = false; dcInfo(); }
+    };
+    $("dc-off").onclick = async () => { await invoke("discord_disconnect"); $("dc-msg").textContent = ""; dcInfo(); };
+    dcInfo();
+    setInterval(() => { if (!document.hidden && !$("dc-connect").disabled) dcInfo(); }, 5000);
+
+    async function load() {
+      s = await invoke("get_settings");
+      document.querySelectorAll("[data-k]").forEach((el) => (el.checked = !!s[el.dataset.k]));
+      document.querySelectorAll("[data-tool-k]").forEach((el) => (el.checked = !(s.hidden_tools || []).includes(el.dataset.toolK)));
+      $("block").value = (s.notif_blocklist || []).join("\n");
+      $("claude-dir").value = s.claude_dir || "";
+      const cur = s.lang || (window.I18N ? I18N.lang : "fr");
+      document.querySelectorAll("#lang [data-lang]").forEach((b) => b.classList.toggle("on", b.dataset.lang === cur));
+      renderAccounts();
+    }
+    function renderAccounts(status = {}) {
+      const box = $("accounts");
+      $("acc-count").textContent = s.accounts.length ? `· ${s.accounts.length}` : "";
+      showForm(adding);
+      if (!s.accounts.length) { box.innerHTML = `<div class="empty">Aucun compte connecté.</div>`; return; }
+      box.innerHTML = s.accounts.map((a) => {
+        const st = status[a] || window._status?.[a];
+        return `<div class="row"><div class="acc"><div class="av">${esc(a[0].toUpperCase())}</div><div><div class="t">${esc(a)}</div><div class="d"><span class="dot ${st ? (st.ok ? "ok" : "err") : ""}"></span>${esc(st ? st.message : "Connexion…")}</div></div></div><button class="btn danger" data-rm="${esc(a)}">Retirer</button></div>`;
+      }).join("");
+    }
+    async function save() {
+      document.querySelectorAll("[data-k]").forEach((el) => (s[el.dataset.k] = el.checked));
+      s.hidden_tools = [...document.querySelectorAll("[data-tool-k]")].filter((el) => !el.checked).map((el) => el.dataset.toolK);
+      s.notif_blocklist = $("block").value.split("\n").map((x) => x.trim()).filter(Boolean);
+      await invoke("save_settings", { s });
+    }
+    document.querySelectorAll("[data-k], [data-tool-k]").forEach((el) => el.addEventListener("change", save));
+    $("block").addEventListener("change", save);
+    $("claude-dir").addEventListener("change", save);
+    document.querySelectorAll("#lang [data-lang]").forEach((b) => b.addEventListener("click", async () => {
+      if (!s || b.classList.contains("on")) return;
+      s.lang = b.dataset.lang;
+      await save();
+      if (window.I18N) I18N.set(s.lang); else location.reload();
+    }));
+
+    async function lsInfo() {
+      const d = await invoke("phone_device").catch(() => null);
+      $("ls-state").textContent = d ? `${d.alias}${d.model ? " · " + d.model : ""} · ${d.ip}` : "Aucun : choisis-le avec 📱 sur un téléchargement terminé";
+      $("ls-forget").classList.toggle("hide", !d);
+    }
+    $("ls-forget").onclick = async () => { await invoke("phone_forget"); lsInfo(); };
+    lsInfo();
+    $("notifset").onclick = () => invoke("open_notification_settings");
+    document.addEventListener("click", async (e) => {
+      const a = e.target.closest("[data-url]");
+      if (a) { e.preventDefault(); invoke(a.dataset.url.startsWith("http") ? "open_url" : "open_url_any", { url: a.dataset.url }).catch(() => {}); }
+      const rm = e.target.closest("[data-rm]");
+      if (rm) { await invoke("remove_gmail", { email: rm.dataset.rm }); await load(); }
+    });
+    $("add").onclick = async () => {
+      const btn = $("add"), msg = $("msg");
+      btn.disabled = true; msg.className = "msg"; msg.textContent = "Connexion à Gmail…";
+      try {
+        await invoke("add_gmail", { email: $("email").value, password: $("pass").value });
+        msg.className = "msg ok"; msg.textContent = "Connecté ✓";
+        $("pass").value = ""; $("email").value = "";
+        adding = false;
+        await load();
+      } catch (err) {
+        msg.className = "msg err";
+        msg.textContent = String(err).includes("AUTHENTICATIONFAILED") || String(err).includes("credentials")
+          ? "Identifiants refusés : vérifie le mot de passe d'application." : String(err);
+      } finally { btn.disabled = false; }
+    };
+    window.__TAURI__.event.listen("gmail-status", (e) => {
+      window._status = window._status || {};
+      window._status[e.payload.account] = e.payload;
+      if (s) renderAccounts();
+    });
+    invoke("gmail_status").then((list) => { window._status = Object.fromEntries(list.map((x) => [x.account, x])); }).finally(load);
+  </script>
+</body>
+</html>

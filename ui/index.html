@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WowIsland</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="stage">
+    <div id="island">
+      <!-- inactif -->
+      <section class="view" data-view="idle">
+        <div class="i-time" id="i-time"></div>
+        <div class="i-notifs" id="i-notifs"></div>
+      </section>
+
+      <!-- activité compacte (musique / minuteur / iPhone) -->
+      <section class="view" data-view="compact">
+        <div class="lead" id="c-lead"></div>
+        <div class="c-mid" id="c-mid"></div>
+        <div class="trail" id="c-trail"></div>
+        <div class="dl-bar"><i></i></div>
+      </section>
+
+      <!-- vue étendue au survol -->
+      <section class="view" data-view="expanded">
+        <div class="x-media" id="x-media">
+          <div class="x-top">
+            <div class="art-wrap"><img id="x-art" alt="" /><div class="art-fallback" id="x-art-fb"></div></div>
+            <div class="meta">
+              <div class="title marquee"><span id="x-title"></span></div>
+              <div class="artist" id="x-artist"></div>
+              <div class="app" id="x-app"></div>
+            </div>
+            <div class="eq big" id="x-eq"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="x-volhint" id="x-volhint"></div>
+          </div>
+          <div class="x-lyric" id="x-lyric"><div class="ly-cur" id="ly-cur"></div><div class="ly-nxt" id="ly-nxt"></div></div>
+          <div class="x-progress">
+            <div class="bar" id="x-bar"><div class="fill" id="x-fill"></div><div class="knob" id="x-knob"></div></div>
+            <div class="x-times"><span id="x-pos">0:00</span><span id="x-rem">-0:00</span></div>
+          </div>
+          <div class="x-controls">
+            <button class="ctl mode" data-mode="shuffle" id="x-shuf" title="Lecture aléatoire"></button>
+            <div class="x-mid">
+              <button class="ctl" data-media="prev" title="Précédent"></button>
+              <button class="ctl play" data-media="play_pause" id="x-play" title="Lecture / pause"></button>
+              <button class="ctl" data-media="next" title="Suivant"></button>
+            </div>
+            <button class="ctl mode" data-mode="repeat" id="x-rep" title="Répéter"></button>
+          </div>
+          <div class="x-vol" id="x-vol">
+            <span class="xv-ic" id="xv-ic" title="Couper le son"></span>
+            <input type="range" min="0" max="100" step="1" id="xv-range" />
+            <span class="xv-hi" id="xv-hi"></span>
+          </div>
+          <div class="x-others" id="x-others"></div>
+        </div>
+
+        <div class="x-mixer" id="x-mixer"></div>
+
+        <div class="x-notifs" id="x-notifs"></div>
+
+        <div class="x-home" id="x-home">
+          <div class="x-home-top">
+            <div class="clock" id="x-clock">--:--</div>
+            <div class="date" id="x-date"></div>
+          </div>
+          <div class="x-game" id="x-game"></div>
+        </div>
+
+        <div class="x-clips" id="x-clips">
+          <div class="nc-head"><span>Presse-papiers</span><button class="nc-clear" id="cb-clear" data-cbclear="1">Tout effacer</button></div>
+          <label class="cb-search"><span id="cb-sic"></span><input id="cb-q" type="text" placeholder="Rechercher…" spellcheck="false" autocomplete="off" /></label>
+          <div class="cb-list" id="cb-list"></div>
+        </div>
+
+        <div class="x-claude" id="x-claude">
+          <div class="cl-head">
+            <div class="cl-id"><span class="cl-logo" id="cl-logo"></span><b>Claude</b><span class="cl-model" id="cl-model"></span></div>
+            <div class="cl-quota" id="cl-quota"></div>
+            <button class="nc-clear" id="cl-new" title="Nouvelle conversation">Nouvelle</button>
+          </div>
+          <div class="cl-log" id="cl-log"></div>
+          <div class="cl-input">
+            <textarea id="cl-q" rows="1" placeholder="Demande à Claude…" spellcheck="false"></textarea>
+            <button class="cl-send" id="cl-send" title="Envoyer (Entrée)"></button>
+          </div>
+        </div>
+
+        <div class="x-grab" id="x-grab">
+          <div class="gr-head">
+            <div class="cl-id"><span class="gr-logo" id="gr-logo"></span><b>Télécharger</b></div>
+            <div class="gr-hbtns"><button class="nc-clear" id="gr-clear" data-gr="clear" title="Retirer les téléchargements finis de la liste">Effacer</button><button class="nc-clear" data-gr="dir" title="Ouvrir Téléchargements\Île">Dossier</button></div>
+          </div>
+          <div class="gr-input">
+            <span class="gr-lic" id="gr-lic"></span>
+            <input id="gr-q" type="text" placeholder="Colle un lien YouTube, TikTok, Instagram, X…" spellcheck="false" autocomplete="off" />
+            <button class="gr-paste" id="gr-paste" data-gr="paste">Coller</button>
+          </div>
+          <div class="gr-body" id="gr-body"></div>
+          <div class="gr-list" id="gr-list"></div>
+        </div>
+
+        <div class="x-music" id="x-music">
+          <div class="gr-head">
+            <div class="cl-id"><span class="mu-logo" id="mu-logo"></span><b>Ma musique</b><span class="mu-count" id="mu-count"></span></div>
+            <div class="gr-hbtns"><button class="nc-clear" data-mu="shuffle" title="Tout lire dans le désordre">Aléatoire</button><button class="nc-clear" data-mu="dir" title="Ouvrir le dossier Musique\Ma musique (tu peux aussi y glisser tes MP3)">Dossier</button></div>
+          </div>
+          <label class="cb-search"><span id="mu-sic"></span><input id="mu-q" type="text" placeholder="Rechercher un titre, un artiste…" spellcheck="false" autocomplete="off" /></label>
+          <div class="mu-list" id="mu-list"></div>
+        </div>
+
+        <div class="x-voice" id="x-voice"></div>
+
+        <div class="x-dls" id="x-dls"></div>
+
+        <div class="x-timerpick" id="x-timerpick">
+          <div class="tp-title">Minuteur</div>
+          <div class="tp-grid" id="tp-grid"></div>
+        </div>
+
+        <div class="x-tools">
+          <div class="tools">
+            <button class="tool" data-tool="region" title="Capturer une zone"></button>
+            <button class="tool" data-tool="full" title="Capturer l'écran"></button>
+            <button class="tool" data-tool="timer" title="Minuteur"></button>
+            <button class="tool" data-tool="volume" title="Volume des sorties et des applis"></button>
+            <button class="tool" data-tool="clip" title="Presse-papiers"></button>
+            <button class="tool" data-tool="notifs" title="Notifications"></button>
+            <button class="tool" data-tool="grab" title="Télécharger une vidéo ou une musique"></button>
+            <button class="tool" data-tool="music" title="Ma musique"></button>
+            <button class="tool" data-tool="claude" title="Claude Code"></button>
+            <button class="tool" data-tool="settings" title="Réglages"></button>
+          </div>
+          <div class="chips">
+            <button class="chip timer-chip" id="x-timer-chip" title="Arrêter le minuteur"></button>
+            <div class="chip pv-chip" id="x-pv-chip"></div>
+            <div class="chip phone-chip" id="x-phone-chip"></div>
+            <div class="chip clock-chip" id="x-clock-chip"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- notification (PC, iPhone, mail) -->
+      <section class="view" data-view="alert">
+        <div class="a-icon" id="a-icon"></div>
+        <div class="a-text">
+          <div class="a-head"><span id="a-app"></span><span class="a-time">maintenant</span></div>
+          <div class="a-title" id="a-title"></div>
+          <div class="a-body" id="a-body"></div>
+        </div>
+      </section>
+
+      <!-- code / lien de vérification -->
+      <section class="view" data-view="secret">
+        <div class="s-icon" id="s-icon"></div>
+        <div class="s-text">
+          <div class="s-head" id="s-head"></div>
+          <div class="s-code" id="s-code"></div>
+          <div class="s-link" id="s-link"></div>
+        </div>
+        <div class="s-side" id="s-side"></div>
+      </section>
+
+      <!-- volume / luminosité -->
+      <section class="view" data-view="osd">
+        <div class="o-ic" id="o-ic"></div>
+        <div class="o-bar"><i id="o-fill"></i></div>
+        <div class="o-pct" id="o-pct"></div>
+      </section>
+
+      <!-- quelqu'un rejoint / quitte le salon vocal -->
+      <section class="view" data-view="pill">
+        <div class="p-av" id="p-av"></div>
+        <div class="p-t" id="p-t"></div>
+        <div class="p-st" id="p-st"></div>
+      </section>
+
+      <!-- iPhone branché -->
+      <section class="view" data-view="charge">
+        <div class="ch-left">
+          <div class="ch-name" id="ch-name">iPhone</div>
+          <div class="ch-state" id="ch-state">En charge</div>
+        </div>
+        <div class="ch-right">
+          <div class="ch-pct" id="ch-pct">--%</div>
+          <div class="battery big" id="ch-batt"><div class="lvl"></div><svg class="bolt" viewBox="0 0 10 16"><path d="M6 0 0 9h4l-1 7 7-10H6l1-6z"/></svg></div>
+        </div>
+      </section>
+
+      <!-- capture d'écran -->
+      <section class="view" data-view="shot">
+        <img id="sh-thumb" alt="" />
+        <div class="sh-text">
+          <div class="sh-title" id="sh-title">Capture enregistrée</div>
+          <div class="sh-sub" id="sh-sub">Copiée dans le presse-papiers</div>
+          <div class="sh-acts" id="sh-acts"></div>
+        </div>
+        <div class="sh-check"></div>
+      </section>
+      <!-- point micro / caméra : dans l'île, sur un espace réservé à droite -->
+      <div id="pdot"></div>
+    </div>
+    <div id="pager"></div>
+    <button class="arrow" id="arr-l" title="Activité précédente (molette aussi)"></button>
+    <button class="arrow" id="arr-r" title="Activité suivante (molette aussi)"></button>
+    <div id="bubble"><div class="bubble-inner" id="bubble-inner"></div></div>
+  </div>
+  <script src="i18n-en.js"></script>
+  <script src="i18n.js"></script>
+  <script src="icons.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

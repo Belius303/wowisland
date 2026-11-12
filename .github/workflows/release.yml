@@ -1,0 +1,44 @@
+# Publie WowIsland.exe (+ son SHA-256) dans une Release GitHub quand on pousse un tag « v* »
+# (ex. git tag v0.1.0 && git push --tags).
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Build
+        run: cargo build --release --locked
+      - name: Package
+        shell: pwsh
+        run: |
+          Copy-Item target/release/dynamic-island.exe WowIsland.exe
+          # Signature de code : à brancher ici quand un certificat est disponible
+          # (SignPath Foundation pour l'open source, Azure Trusted Signing…), avant le calcul du SHA-256.
+          $h = (Get-FileHash WowIsland.exe -Algorithm SHA256).Hash.ToLower()
+          "$h  WowIsland.exe" | Out-File -Encoding ascii WowIsland.exe.sha256
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WowIsland
+          path: |
+            WowIsland.exe
+            WowIsland.exe.sha256
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            WowIsland.exe
+            WowIsland.exe.sha256
+          generate_release_notes: true

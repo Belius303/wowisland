@@ -1,0 +1,5 @@
+/target
+/gen
+/.claude
+/dev/real-view.*
+*.log
