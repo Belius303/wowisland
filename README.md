@@ -91,6 +91,19 @@ Hover the island to expand it. Requirements: Windows 10/11 x64 with the WebView2
 
 Everything stays on your PC, in `%USERPROFILE%\.dynamicisland`. Passwords and tokens (Gmail app passwords, Spotify / Discord tokens) are encrypted with Windows **DPAPI**, tied to your Windows session. Mails are never marked as read. No telemetry, no account.
 
+WowIsland doesn't send anything to the author. It only talks to the services behind the features you turn on (Gmail, LRCLIB, Spotify, Discord…), directly from your PC. The full list is in the **[privacy policy](PRIVACY.md)**.
+
+## Code signing policy
+
+Windows releases are built by [GitHub Actions](.github/workflows/release.yml) from the source code in this repository, and each release lists the SHA-256 of `WowIsland.exe`.
+
+Code signing is being set up with [SignPath Foundation](https://signpath.org), which offers free certificates to open-source projects. Once it's in place, release binaries will be signed with: *Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org)*.
+
+- Committers and reviewers: [Belius303](https://github.com/Belius303)
+- Approvers: [Belius303](https://github.com/Belius303)
+
+This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it. See the [privacy policy](PRIVACY.md).
+
 ## Build from source
 
 ```bash

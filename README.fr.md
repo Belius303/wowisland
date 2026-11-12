@@ -91,6 +91,19 @@ Survole l'île pour la déplier. Prérequis : Windows 10/11 x64 avec le runtime 
 
 Tout reste sur ton PC, dans `%USERPROFILE%\.dynamicisland`. Les mots de passe et jetons (mots de passe d'application Gmail, jetons Spotify / Discord) sont chiffrés avec **DPAPI** de Windows, liés à ta session. Les mails ne sont jamais marqués comme lus. Pas de télémétrie, pas de compte.
 
+WowIsland n'envoie rien à l'auteur. Elle ne parle qu'aux services des fonctions que tu actives (Gmail, LRCLIB, Spotify, Discord…), directement depuis ton PC. La liste complète est dans la **[politique de confidentialité](PRIVACY.md#politique-de-confidentialité)**.
+
+## Signature du code
+
+Les versions Windows sont compilées par [GitHub Actions](.github/workflows/release.yml) à partir du code de ce dépôt, et chaque version indique le SHA-256 de `WowIsland.exe`.
+
+La signature est en cours de mise en place avec [SignPath Foundation](https://signpath.org), qui fournit des certificats gratuits aux projets open source. Une fois en place, les exécutables seront signés avec : *Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org)*.
+
+- Contributeurs et relecteurs : [Belius303](https://github.com/Belius303)
+- Approbateurs : [Belius303](https://github.com/Belius303)
+
+Ce programme ne transfère aucune information vers d'autres systèmes en réseau, sauf à la demande explicite de l'utilisateur ou de la personne qui l'installe ou l'utilise. Voir la [politique de confidentialité](PRIVACY.md#politique-de-confidentialité).
+
 ## Compiler
 
 ```bash
