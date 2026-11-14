@@ -406,7 +406,26 @@ fn base_cmd() -> Result<Command, String> {
     if let Some(d) = deno() {
         c.arg("--js-runtimes").arg(format!("deno:{}", d.display()));
     }
+    if let Some(b) = cookies_browser() {
+        c.arg("--cookies-from-browser").arg(b);
+    }
     Ok(c)
+}
+
+/// Réglage « Cookies du navigateur » (désactivé par défaut) : yt-dlp lit les cookies de ce navigateur
+/// pour se présenter comme l'utilisateur connecté. Rien n'est copié ni gardé par l'île.
+fn cookies_browser() -> Option<String> {
+    let b = crate::config::get().yt_cookies;
+    match b.as_str() {
+        // Zen (base Firefox) n'est pas connu de yt-dlp : on lui donne le dossier des profils,
+        // il y prend le cookies.sqlite le plus récent.
+        "zen" => {
+            let d = PathBuf::from(std::env::var_os("APPDATA")?).join("zen").join("Profiles");
+            d.is_dir().then(|| format!("firefox:{}", d.display()))
+        }
+        "firefox" | "chrome" | "edge" | "brave" | "opera" | "vivaldi" => Some(b),
+        _ => None,
+    }
 }
 
 /* ---------------- analyse d'un lien ---------------- */
@@ -657,6 +676,25 @@ fn first_error(err: &str) -> String {
 fn friendly(err: &str) -> String {
     let e = err.to_lowercase();
     let has = |k: &str| e.contains(k);
+    // d'abord les échecs de lecture des cookies du navigateur (réglage « Cookies du navigateur »)
+    if has("could not copy") && has("cookie database") {
+        return "Impossible de lire les cookies du navigateur (il les verrouille) : ferme-le complètement, ou choisis Firefox ou Zen dans les réglages.".into();
+    }
+    // yt-dlp continue sans les cookies indéchiffrables : on ne le signale que si c'est bien une connexion qui manque
+    if (has("failed to decrypt with dpapi") || has("app-bound")) && (has("not a bot") || has("sign in") || has("log in") || has("login")) {
+        return "Chrome, Edge et Brave protègent leurs cookies : choisis Firefox ou Zen dans les réglages (Cookies du navigateur).".into();
+    }
+    if has("could not find") && has("cookies database") {
+        return "Navigateur introuvable pour les cookies : vérifie le réglage « Cookies du navigateur ».".into();
+    }
+    // YouTube soupçonne un robot (« Sign in to confirm you're not a bot ») : rien à voir avec une vidéo privée
+    if has("not a bot") {
+        return if crate::config::get().yt_cookies.is_empty() {
+            "YouTube demande de prouver que tu n'es pas un robot. Dans les réglages (Télécharger), choisis ton navigateur pour « Cookies du navigateur », ou réessaie plus tard.".into()
+        } else {
+            "YouTube demande encore de prouver que tu n'es pas un robot : ouvre YouTube dans ton navigateur, connecte-toi, puis réessaie.".into()
+        };
+    }
     if has("drm") {
         "Contenu protégé (DRM) : impossible à télécharger.".into()
     } else if has("unsupported url") {

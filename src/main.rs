@@ -590,6 +590,9 @@ struct SettingsDto {
     /// "fr", "en" ou "" (langue de Windows)
     #[serde(default)]
     lang: String,
+    /// navigateur dont le téléchargeur lit les cookies ("" = jamais)
+    #[serde(default)]
+    yt_cookies: String,
 }
 
 fn yes() -> bool {
@@ -616,6 +619,7 @@ fn get_settings() -> SettingsDto {
         hidden_tools: c.hidden_tools,
         claude_dir: c.claude_dir,
         lang: c.lang,
+        yt_cookies: c.yt_cookies,
     }
 }
 
@@ -639,6 +643,7 @@ fn save_settings(app: AppHandle, s: SettingsDto) -> Result<(), String> {
         c.hidden_tools = s.hidden_tools;
         c.claude_dir = s.claude_dir.trim().to_string();
         c.lang = s.lang;
+        c.yt_cookies = s.yt_cookies;
     })?;
     std::thread::spawn(|| winnotif::sync(false));
     set_autostart(autostart)?;

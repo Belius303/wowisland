@@ -433,7 +433,15 @@ window.I18N_EN = {
 "état affiché le temps que l": "state shown while the",
 "île est ouverte : pas d": "island is open: no",
 "−{0} po": "−{0} g",
-"● En direct": "● Live"
+"● En direct": "● Live",
+"Cookies du navigateur": "Browser cookies",
+"Si YouTube demande de prouver que tu n'es pas un robot : le téléchargeur se présente avec ta session de ce navigateur (sois connecté à YouTube dedans). Les cookies sont lus sur ton PC au moment du téléchargement, jamais copiés ni envoyés ailleurs. Firefox et Zen marchent le mieux : Chrome, Edge et Brave bloquent souvent la lecture.": "If YouTube asks you to prove you're not a bot: the downloader uses your session from this browser (be signed in to YouTube there). Cookies are read on your PC at download time, never copied or sent anywhere else. Firefox and Zen work best: Chrome, Edge and Brave often block reading them.",
+"Désactivé": "Off",
+"Impossible de lire les cookies du navigateur (il les verrouille) : ferme-le complètement, ou choisis Firefox ou Zen dans les réglages.": "Can't read the browser's cookies (it locks them): close it completely, or pick Firefox or Zen in settings.",
+"Chrome, Edge et Brave protègent leurs cookies : choisis Firefox ou Zen dans les réglages (Cookies du navigateur).": "Chrome, Edge and Brave protect their cookies: pick Firefox or Zen in settings (Browser cookies).",
+"Navigateur introuvable pour les cookies : vérifie le réglage « Cookies du navigateur ».": "Browser not found for cookies: check the \"Browser cookies\" setting.",
+"YouTube demande de prouver que tu n'es pas un robot. Dans les réglages (Télécharger), choisis ton navigateur pour « Cookies du navigateur », ou réessaie plus tard.": "YouTube wants proof you're not a bot. In settings (Download), pick your browser under \"Browser cookies\", or try again later.",
+"YouTube demande encore de prouver que tu n'es pas un robot : ouvre YouTube dans ton navigateur, connecte-toi, puis réessaie.": "YouTube still wants proof you're not a bot: open YouTube in your browser, sign in, then try again."
 };
 window.I18N_EN_HTML = {
 "<0>Batterie en USB :</0> installe <1>Appareils Apple</1> (Microsoft Store), branche l'iPhone et appuie sur « Faire confiance ».": "<0>Battery over USB:</0> install <1>Apple Devices</1> (Microsoft Store), plug in the iPhone and tap “Trust”.",

@@ -60,6 +60,9 @@ pub struct Config {
     /// boutons de l'île masqués (réglages)
     #[serde(default)]
     pub hidden_tools: Vec<String>,
+    /// Navigateur dont le téléchargeur lit les cookies (yt-dlp --cookies-from-browser) : "" = jamais (défaut),
+    /// "firefox", "zen", "chrome", "edge", "brave", "opera", "vivaldi". Sert quand YouTube réclame une connexion.
+    pub yt_cookies: String,
 }
 
 impl Default for Config {
@@ -85,6 +88,7 @@ impl Default for Config {
             notif_sound: true,
             hidden_tools: vec![],
             lang: String::new(),
+            yt_cookies: String::new(),
         }
     }
 }

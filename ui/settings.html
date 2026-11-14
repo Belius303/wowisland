@@ -83,6 +83,8 @@
     .lang button.on { background: var(--card2); color: var(--fg); box-shadow: 0 1px 4px rgba(0,0,0,.35); }
     .warn { margin: 0 16px 16px; padding: 10px 12px; border-radius: 10px; background: rgba(255,159,10,.1); border: 1px solid rgba(255,159,10,.3); color: #ffd28a; font-size: 12.5px; }
     .row input[type=text].inline { width: 260px; }
+    select { flex: none; background: var(--card2); border: 1px solid var(--line); color: var(--fg); border-radius: 10px; padding: 7px 10px; font: inherit; outline: none; cursor: pointer; }
+    select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(10,132,255,.25); }
   </style>
 </head>
 <body>
@@ -196,6 +198,19 @@
         <li>Les fichiers vont dans <code>Téléchargements\Île</code>. Liens Spotify / Deezer : chaque titre est retrouvé sur YouTube et enregistré en MP3 avec sa pochette. Les contenus protégés (Netflix, Disney+…) sont impossibles.</li>
         <li>Sur chaque téléchargement : <b>Ma musique</b> (le lecteur de l'île), <b>Spotify</b> (dossier des fichiers locaux), <b>📱</b> (envoi sur le tel, voir ci-dessous).</li>
       </ol>
+    </div>
+    <div class="row" style="border-top:1px solid var(--line)">
+      <div><div class="t">Cookies du navigateur</div><div class="d">Si YouTube demande de prouver que tu n'es pas un robot : le téléchargeur se présente avec ta session de ce navigateur (sois connecté à YouTube dedans). Les cookies sont lus sur ton PC au moment du téléchargement, jamais copiés ni envoyés ailleurs. Firefox et Zen marchent le mieux : Chrome, Edge et Brave bloquent souvent la lecture.</div></div>
+      <select id="yt-cookies">
+        <option value="">Désactivé</option>
+        <option value="firefox">Firefox</option>
+        <option value="zen">Zen</option>
+        <option value="chrome">Chrome</option>
+        <option value="edge">Edge</option>
+        <option value="brave">Brave</option>
+        <option value="opera">Opera</option>
+        <option value="vivaldi">Vivaldi</option>
+      </select>
     </div>
     <div class="warn">Ne télécharge que ce que tu as le droit de télécharger : tes propres contenus, ceux sous licence libre ou ceux que l'auteur permet de télécharger.</div>
   </div>
@@ -414,6 +429,7 @@
       document.querySelectorAll("[data-tool-k]").forEach((el) => (el.checked = !(s.hidden_tools || []).includes(el.dataset.toolK)));
       $("block").value = (s.notif_blocklist || []).join("\n");
       $("claude-dir").value = s.claude_dir || "";
+      $("yt-cookies").value = s.yt_cookies || "";
       const cur = s.lang || (window.I18N ? I18N.lang : "fr");
       document.querySelectorAll("#lang [data-lang]").forEach((b) => b.classList.toggle("on", b.dataset.lang === cur));
       renderAccounts();
@@ -432,11 +448,13 @@
       document.querySelectorAll("[data-k]").forEach((el) => (s[el.dataset.k] = el.checked));
       s.hidden_tools = [...document.querySelectorAll("[data-tool-k]")].filter((el) => !el.checked).map((el) => el.dataset.toolK);
       s.notif_blocklist = $("block").value.split("\n").map((x) => x.trim()).filter(Boolean);
+      s.yt_cookies = $("yt-cookies").value;
       await invoke("save_settings", { s });
     }
     document.querySelectorAll("[data-k], [data-tool-k]").forEach((el) => el.addEventListener("change", save));
     $("block").addEventListener("change", save);
     $("claude-dir").addEventListener("change", save);
+    $("yt-cookies").addEventListener("change", save);
     document.querySelectorAll("#lang [data-lang]").forEach((b) => b.addEventListener("click", async () => {
       if (!s || b.classList.contains("on")) return;
       s.lang = b.dataset.lang;
