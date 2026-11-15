@@ -221,18 +221,46 @@ fn process_running(exe: &str) -> bool {
     }
 }
 
-/// Windows garde une clé par appli qui a déjà affiché une notification.
+/// Une notif de l'iPhone est passée par l'île depuis son lancement.
+static PHONE_NOTIF_SEEN: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn phone_notif_seen() {
+    PHONE_NOTIF_SEEN.store(true, std::sync::atomic::Ordering::Relaxed);
+}
+
+/// Mobile connecté a-t-il déjà relayé une notification de l'iPhone ?
+/// Windows garde une clé par expéditeur qui a déjà notifié : pour Mobile connecté, une par appli de l'iPhone
+/// (« Microsoft.YourPhone_…!YourPhoneNotifications_net.whatsapp.WhatsApp »…), pas une seule « !App ».
 fn phone_link_ever_notified() -> bool {
-    use windows::core::HSTRING;
+    use windows::core::{HSTRING, PWSTR};
     use windows::Win32::System::Registry::*;
-    let path = HSTRING::from(format!(r"Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\{PHONE_LINK}!App"));
+    if PHONE_NOTIF_SEEN.load(std::sync::atomic::Ordering::Relaxed) {
+        return true;
+    }
+    let path = HSTRING::from(r"Software\Microsoft\Windows\CurrentVersion\Notifications\Settings");
+    let prefix = format!("{PHONE_LINK}!").to_lowercase();
     let mut key = HKEY::default();
     unsafe {
-        let ok = RegOpenKeyExW(HKEY_CURRENT_USER, &path, None, KEY_READ, &mut key).is_ok();
-        if ok {
-            let _ = RegCloseKey(key);
+        if RegOpenKeyExW(HKEY_CURRENT_USER, &path, None, KEY_READ, &mut key).is_err() {
+            return false;
         }
-        ok
+        let mut found = false;
+        let mut buf = [0u16; 512];
+        for i in 0.. {
+            let mut len = buf.len() as u32;
+            if RegEnumKeyExW(key, i, Some(PWSTR(buf.as_mut_ptr())), &mut len, None, None, None, None).is_err() {
+                break;
+            }
+            let name = String::from_utf16_lossy(&buf[..len as usize]).to_lowercase();
+            if let Some(rest) = name.strip_prefix(&prefix) {
+                if rest == "app" || rest.starts_with("yourphonenotifications") {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        let _ = RegCloseKey(key);
+        found
     }
 }
 

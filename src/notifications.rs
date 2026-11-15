@@ -146,6 +146,7 @@ fn read(n: &UserNotification, icons: &mut HashMap<String, Option<String>>) -> Op
                 found
             }
         };
+        crate::iphone::phone_notif_seen();
         return Some(NotifEvent { id, app: src_app, title, body, icon, phone: true });
     }
 
