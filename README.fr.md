@@ -75,6 +75,7 @@ Elle est transparente et laisse passer les clics partout sauf sur l'île, ne vol
 | 🤖 **Claude Code** | Une mini-session Claude Code dans l'île, plus ton quota d'utilisation (nécessite la CLI `claude`) |
 | 🕹️ **Jeux** | Détecte le jeu en cours, temps de jeu, relance du dernier jeu |
 | ⚔️ **Coach LoL** | API Live Client Data de Riot, recoupée avec OP.GG et Data Dragon |
+| 🔄 **Mises à jour** | Une fois par jour, WowIsland regarde s'il y a une nouvelle version et te la propose avec ses nouveautés ; un clic la télécharge, vérifie son SHA-256 et redémarre dessus |
 | ⏱️ **Et aussi** | Minuteur, OSD volume / luminosité, voyant micro / caméra, historique du presse-papiers |
 
 ## Pour commencer
@@ -102,7 +103,7 @@ La signature est en cours de mise en place avec [SignPath Foundation](https://si
 - Contributeurs et relecteurs : [Belius303](https://github.com/Belius303)
 - Approbateurs : [Belius303](https://github.com/Belius303)
 
-Ce programme ne transfère aucune information vers d'autres systèmes en réseau, sauf à la demande explicite de l'utilisateur ou de la personne qui l'installe ou l'utilise. Voir la [politique de confidentialité](PRIVACY.md#politique-de-confidentialité).
+Ce programme ne transfère aucune information vers d'autres systèmes en réseau, sauf à la demande explicite de l'utilisateur ou de la personne qui l'installe ou l'utilise. La seule connexion automatique est la vérification quotidienne des mises à jour (le numéro de la dernière version, demandé à GitHub), désactivable dans les réglages. Voir la [politique de confidentialité](PRIVACY.md#politique-de-confidentialité).
 
 ## Compiler
 

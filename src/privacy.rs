@@ -83,7 +83,7 @@ fn packaged_name(pkg: &str) -> String {
     match last.to_lowercase().as_str() {
         "windowscamera" => "Caméra".into(),
         "windowssoundrecorder" => "Enregistreur vocal".into(),
-        "yourphone" | "phonelink" => "Lien avec le téléphone".into(),
+        "yourphone" | "phonelink" => "Mobile connecté".into(),
         "teams" | "msteams" => "Teams".into(),
         _ => last.to_string(),
     }

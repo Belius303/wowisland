@@ -216,6 +216,12 @@ function baseSize(view) {
       const d = S.current && S.current.data;
       return [d && (d.text || d.qr) ? 412 : 362, 84, 30];
     }
+    case "update": {
+      const d = S.current && S.current.data;
+      if (!d || d.state === "download" || d.state === "restart") return [420, 72, 30];
+      if (d.state === "error") return [420, 130, 30];
+      return [440, 93 + ((d.notes || []).length + (d.more ? 1 : 0)) * 19, 30];
+    }
     default: return idleSize();
   }
 }
@@ -2150,6 +2156,8 @@ function pushTransient(kind, data, ms, urgent = false) {
   const item = { kind, data, ms };
   if (urgent) {
     S.queue.unshift(item);
+    // la mise à jour (surtout en cours de téléchargement) reprend juste après
+    if (S.current && S.current.kind === "update") S.queue.splice(1, 0, S.current);
     if (S.current && S.current.kind !== "secret") return showNext();
   } else {
     S.queue.push(item);
@@ -2246,6 +2254,8 @@ function fillTransient({ kind, data }) {
     const b = $("ch-batt");
     b.style.setProperty("--lvl", "0%");
     requestAnimationFrame(() => setTimeout(() => updBattery(b, data), 120));
+  } else if (kind === "update") {
+    fillUpdate(data);
   } else if (kind === "shot") {
     $("sh-thumb").src = data.thumb;
     $("sh-thumb").style.animation = "none";
@@ -2367,6 +2377,7 @@ island.addEventListener("click", (e) => {
 
   // boutons
   if (t.dataset.sh) return shotAction(t);
+  if (t.dataset.up) return updateAction(t.dataset.up);
   if (t.dataset.media) {
     const m = t.dataset.id ? S.medias.find((x) => x.id === t.dataset.id) : S.media;
     if (t.dataset.media === "play_pause" && m) {
@@ -3268,6 +3279,96 @@ island.addEventListener("animationend", (e) => { if (e.animationName === "bump")
 
 applySize();
 loadUiConfig();
+/* ============================================================
+   Mise à jour : proposée au premier lancement de la journée (Rust : update.rs)
+   ============================================================ */
+const UPDATE_MS = 45000;
+
+function updateItem() {
+  if (S.current && S.current.kind === "update") return S.current;
+  return S.queue.find((q) => q.kind === "update") || null;
+}
+
+function fillUpdate(d) {
+  const ic = $("up-ic");
+  ic.className = "up-ic" + (d.state === "error" ? " err" : "");
+  ic.innerHTML = d.state === "error" ? I.close : d.state === "restart" ? I.retry : I.download;
+  const titles = { ask: "Nouvelle version disponible", download: "Téléchargement de la mise à jour…", restart: "Redémarrage…", error: "Mise à jour impossible" };
+  $("up-title").textContent = titles[d.state] || titles.ask;
+  $("up-pct").textContent = d.state === "download" ? `${d.pct || 0} %` : d.state === "ask" ? `v${d.version}` : "";
+  const notes = d.state === "ask" ? d.notes || [] : [];
+  $("up-notes").innerHTML = notes.map((n) => `<li title="${esc((n.t ? n.t + " : " : "") + n.d)}">${n.t ? `<b>${esc(n.t)}</b>${n.d ? " " : ""}` : ""}${esc(n.d)}</li>`).join("")
+    + (d.state === "ask" && d.more ? `<li class="more">+ ${d.more} de plus…</li>` : "");
+  $("up-err").style.display = d.state === "error" ? "" : "none";
+  $("up-err").textContent = d.state === "error" ? d.msg || "" : "";
+  $("up-bar").style.display = d.state === "download" || d.state === "restart" ? "block" : "none";
+  $("up-fill").style.width = (d.state === "restart" ? 100 : d.pct || 0) + "%";
+  const acts = d.state === "ask"
+    ? [`<button class="sh-btn pri" data-up="go">${I.download}Mettre à jour</button>`, `<button class="sh-btn" data-up="later">Plus tard</button>`, `<button class="sh-btn" data-up="page">${I.link}Nouveautés</button>`]
+    : d.state === "error"
+    ? [`<button class="sh-btn pri" data-up="page">${I.link}Télécharger sur GitHub</button>`, `<button class="sh-btn" data-up="later">Fermer</button>`]
+    : [];
+  $("up-acts").innerHTML = acts.join("");
+  $("up-acts").style.display = acts.length ? "" : "none";
+}
+
+function showUpdate(u) {
+  if (!u || !u.version) return;
+  const it = updateItem();
+  if (it) {
+    if (it.data.state === "download" || it.data.state === "restart") return;
+    it.data = { ...u, state: "ask" };
+    if (it === S.current) { fillUpdate(it.data); scheduleEnd(UPDATE_MS); render(); }
+    return;
+  }
+  pushTransient("update", { ...u, state: "ask" }, UPDATE_MS);
+}
+
+function updateAction(a) {
+  const it = updateItem();
+  if (!it || it !== S.current) return;
+  const d = it.data;
+  if (a === "later") return dismiss();
+  if (a === "page") return invoke("open_url", { url: d.page || "https://github.com/Belius303/wowisland/releases/latest" });
+  if (a === "go") {
+    Object.assign(d, { state: "download", pct: 0, msg: "" });
+    it.ms = 600000; // pas de fermeture automatique pendant le téléchargement
+    fillUpdate(d);
+    scheduleEnd(it.ms);
+    render();
+    invoke("update_install").catch((err) => updateProgress({ state: "error", pct: 0, msg: String(err) }));
+  }
+}
+
+function updateProgress(p) {
+  const it = updateItem();
+  if (!it) return;
+  Object.assign(it.data, p);
+  it.ms = p.state === "error" ? 30000 : 600000;
+  if (it === S.current) {
+    fillUpdate(it.data);
+    scheduleEnd(it.ms);
+    render();
+  }
+}
+
+listen("update", (e) => showUpdate(e.payload));
+listen("update-progress", (e) => updateProgress(e.payload || {}));
+
+invoke("update_pending").then((p) => {
+  if (!p) return;
+  if (p.updated != null) {
+    pushTransient("alert", {
+      app: "WowIsland",
+      title: `Mis à jour en version ${p.version}`,
+      body: "Clique pour voir les nouveautés.",
+      svg: `<div class="up-ic" style="width:30px;height:30px;border-radius:9px">${I.check}</div>`,
+      onClick: () => invoke("open_url", { url: `https://github.com/Belius303/wowisland/releases/tag/v${p.version}` }),
+    }, 7000);
+  }
+  if (p.update) showUpdate(p.update);
+}).catch(() => {});
+
 listen("game", (e) => applyGame(e.payload));
 S._lolTick = 0;
 listen("lol", (e) => applyLol(e.payload));

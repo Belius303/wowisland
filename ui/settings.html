@@ -6,307 +6,452 @@
   <title>Réglages</title>
   <style>
     :root {
-      --bg: #141417; --card: #1e1e22; --card2: #26262b; --line: rgba(255,255,255,.08);
-      --fg: #f5f5f7; --fg2: rgba(255,255,255,.6); --fg3: rgba(255,255,255,.38);
-      --blue: #0a84ff; --green: #30d158; --red: #ff453a;
+      --win: #1c1c1e; --side: #161618; --box: #232326; --box2: #2c2c30; --sep: rgba(255,255,255,.07); --line: rgba(255,255,255,.09);
+      --fg: #f5f5f7; --fg2: rgba(235,235,245,.6); --fg3: rgba(235,235,245,.36);
+      --blue: #0a84ff; --green: #30d158; --red: #ff453a; --orange: #ff9f0a;
       color-scheme: dark;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
     body {
-      background: radial-gradient(1200px 500px at 50% -200px, #23232b, var(--bg));
-      color: var(--fg); min-height: 100vh;
-      font: 14px/1.45 "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased; padding: 28px 24px 40px;
+      background: var(--win); color: var(--fg); overflow: hidden;
+      font: 13.5px/1.42 "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased; user-select: none;
     }
-    header { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; }
-    .logo { width: 54px; height: 54px; border-radius: 15px; background: linear-gradient(145deg,#3a3a48,#141418); display: grid; place-items: center; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
-    .logo i { display: block; width: 36px; height: 13px; border-radius: 7px; background: #000; position: relative; }
-    .logo i::after { content: ""; position: absolute; right: 4px; top: 3.5px; width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
-    h1 { font: 600 22px "Segoe UI Variable Display", "Segoe UI", sans-serif; letter-spacing: -.01em; }
-    .sub { color: var(--fg2); font-size: 13px; }
-    h2 { font-size: 12px; font-weight: 600; color: var(--fg3); text-transform: uppercase; letter-spacing: .08em; margin: 26px 4px 10px; }
-    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-    .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 13px 16px; }
-    .row + .row { border-top: 1px solid var(--line); }
-    .row .t { font-weight: 550; }
-    .row .d { color: var(--fg2); font-size: 12.5px; }
-    .acc { display: flex; align-items: center; gap: 12px; }
-    .acc .av { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(145deg,#ea4335,#fbbc05); display: grid; place-items: center; font-weight: 700; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fg3); display: inline-block; margin-right: 6px; }
-    .dot.ok { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    input, textarea, select, button { font: inherit; color: inherit; }
+    button { background: none; border: 0; cursor: pointer; }
+    a { color: var(--blue); text-decoration: none; cursor: pointer; }
+    a:hover { text-decoration: underline; }
+    .hide { display: none !important; }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 5px; border: 3px solid transparent; background-clip: padding-box; }
+    ::-webkit-scrollbar-thumb:hover { background-color: rgba(255,255,255,.24); }
+
+    .app { display: grid; grid-template-columns: 236px 1fr; height: 100vh; }
+
+    /* ---------------- barre latérale ---------------- */
+    .side { background: var(--side); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+    .search { position: relative; margin: 14px 12px 8px; }
+    .search svg { position: absolute; left: 9px; top: 50%; width: 14px; height: 14px; transform: translateY(-50%); color: var(--fg3); }
+    .search #q {
+      width: 100%; height: 30px; padding: 0 10px 0 29px; border-radius: 8px; border: 1px solid transparent;
+      background: rgba(255,255,255,.07); outline: none; transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .search #q::placeholder { color: var(--fg3); }
+    .search #q:focus { background: rgba(255,255,255,.1); border-color: var(--blue); box-shadow: 0 0 0 3px rgba(10,132,255,.25); }
+    .side-scroll { flex: 1; overflow-y: auto; padding: 4px 10px 14px; }
+    .me { display: flex; align-items: center; gap: 11px; width: 100%; padding: 9px 8px; border-radius: 9px; text-align: left; margin-bottom: 6px; }
+    .me:hover { background: rgba(255,255,255,.05); }
+    .me.on { background: rgba(255,255,255,.08); }
+    .logo { flex: none; width: 40px; height: 40px; border-radius: 11px; background: linear-gradient(150deg, #3b3b48, #101014); display: grid; place-items: center; box-shadow: 0 4px 14px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.08); }
+    .logo i { display: block; width: 25px; height: 9px; border-radius: 5px; background: #000; position: relative; box-shadow: 0 0 0 1px rgba(255,255,255,.06); }
+    .logo i::after { content: ""; position: absolute; right: 3px; top: 2.5px; width: 4px; height: 4px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .me-t { font-weight: 650; font-size: 14px; }
+    .me-d { color: var(--fg2); font-size: 12px; }
+    .me-d b { font-weight: 500; color: var(--blue); }
+    .grp { padding: 6px 0; }
+    .grp + .grp { border-top: 1px solid var(--sep); }
+    .nav { display: flex; align-items: center; gap: 9px; width: 100%; height: 32px; padding: 0 8px; border-radius: 7px; text-align: left; }
+    .nav:hover { background: rgba(255,255,255,.05); }
+    .nav.on { background: var(--blue); }
+    .nav.on .st { color: rgba(255,255,255,.85); }
+    .nav .lbl { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .st { color: var(--fg3); font-size: 12px; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 5px; }
+    .st .dot { margin: 0; }
+    .ic {
+      flex: none; width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center;
+      background: linear-gradient(180deg, var(--c1), var(--c2)); box-shadow: inset 0 0 0 .5px rgba(255,255,255,.18);
+    }
+    .ic svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .ic.big { width: 54px; height: 54px; border-radius: 13px; box-shadow: 0 6px 18px rgba(0,0,0,.35), inset 0 0 0 .5px rgba(255,255,255,.2); }
+    .ic.big svg { width: 30px; height: 30px; stroke-width: 1.8; }
+
+    /* ---------------- contenu ---------------- */
+    main { overflow-y: auto; min-height: 0; scroll-behavior: smooth; }
+    .page { max-width: 660px; margin: 0 auto; padding: 26px 30px 40px; animation: pagein .35s cubic-bezier(.22,1,.36,1) both; }
+    .page:not(.on) { display: none; }
+    @keyframes pagein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .hero { display: flex; align-items: center; gap: 16px; padding: 16px 18px; margin-bottom: 22px; background: var(--box); border: 1px solid var(--line); border-radius: 12px; }
+    .hero h1 { font: 650 19px "Segoe UI Variable Display", "Segoe UI", sans-serif; letter-spacing: -.01em; }
+    .hero p { color: var(--fg2); font-size: 13px; margin-top: 1px; }
+    .gh { font-size: 12.5px; font-weight: 600; color: var(--fg2); margin: 20px 12px 7px; }
+    .gh:first-of-type { margin-top: 0; }
+    .box { background: var(--box); border: 1px solid var(--line); border-radius: 11px; overflow: hidden; }
+    .box + .box { margin-top: 12px; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 46px; padding: 9px 14px; position: relative; }
+    .row + .row::before, .box > * + .row::before, .box > * + .how::before, .row + .form::before, .form + .row::before, .how + .row::before {
+      content: ""; position: absolute; top: 0; left: 14px; right: 0; height: 1px; background: var(--sep);
+    }
+    .row > div:first-child { min-width: 0; }
+    .row .t { font-weight: 500; }
+    .row .d { color: var(--fg2); font-size: 12.5px; margin-top: 1px; }
+    .row.col { display: block; }
+    .row .end { display: flex; align-items: center; gap: 8px; flex: none; }
+    .row.flash { animation: flash 1.6s ease; }
+    @keyframes flash { 0%, 40% { background: rgba(10,132,255,.22); } 100% { background: transparent; } }
+    .note { color: var(--fg3); font-size: 12px; margin: 8px 14px 0; }
+    .tip { text-align: center; color: var(--fg3); font-size: 12px; margin-top: 26px; }
+
+    .acc { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .acc > div:last-child { min-width: 0; }
+    .acc .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .av { flex: none; width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(145deg,#ea4335,#fbbc05); display: grid; place-items: center; font-weight: 700; font-size: 14px; color: #fff; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fg3); display: inline-block; margin-right: 6px; vertical-align: 1px; }
+    .dot.ok { background: var(--green); box-shadow: 0 0 6px rgba(48,209,88,.7); }
     .dot.err { background: var(--red); }
+    .empty { padding: 13px 14px; color: var(--fg3); }
+    .addrow { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 46px; padding: 8px 14px; color: var(--blue); font-weight: 500; position: relative; text-align: left; }
+    .addrow::before { content: ""; position: absolute; top: 0; left: 14px; right: 0; height: 1px; background: var(--sep); }
+    .addrow:hover { background: rgba(255,255,255,.03); }
+    .addrow .plus { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 19px; background: rgba(10,132,255,.14); }
+
     input[type=email], input[type=password], input[type=text], textarea {
-      width: 100%; background: var(--card2); border: 1px solid var(--line); color: var(--fg);
-      border-radius: 10px; padding: 10px 12px; font: inherit; outline: none; transition: border-color .2s, box-shadow .2s;
+      width: 100%; background: var(--box2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px; outline: none; user-select: text;
+      transition: border-color .2s, box-shadow .2s;
     }
+    input::placeholder, textarea::placeholder { color: var(--fg3); }
     input:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(10,132,255,.25); }
-    textarea { resize: vertical; min-height: 64px; }
-    .form { padding: 16px; display: grid; gap: 10px; }
-    .btn { height: 36px; padding: 0 16px; border-radius: 10px; border: 0; font: 600 13.5px inherit; font-family: inherit; cursor: pointer; transition: filter .2s, transform .15s; }
+    textarea { resize: vertical; min-height: 70px; margin-top: 8px; }
+    .form { padding: 12px 14px; display: grid; gap: 8px; position: relative; }
+    .form .line { display: flex; gap: 8px; align-items: center; }
+    select { background: var(--box2); border: 1px solid var(--line); border-radius: 8px; padding: 5px 9px; outline: none; cursor: pointer; }
+    select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(10,132,255,.25); }
+
+    .btn { height: 28px; padding: 0 13px; border-radius: 7px; font-weight: 500; white-space: nowrap; transition: filter .2s, transform .12s, background .2s; background: rgba(255,255,255,.1); }
+    .btn:hover { background: rgba(255,255,255,.15); }
     .btn:active { transform: scale(.97); }
     .btn.primary { background: var(--blue); color: #fff; }
     .btn.primary:hover { filter: brightness(1.12); }
-    .btn.ghost { background: rgba(255,255,255,.08); color: var(--fg); }
-    .btn.danger { background: rgba(255,69,58,.14); color: var(--red); height: 30px; padding: 0 12px; }
+    .btn.danger { color: var(--red); background: rgba(255,69,58,.12); }
+    .btn.danger:hover { background: rgba(255,69,58,.2); }
     .btn:disabled { opacity: .5; cursor: progress; }
-    .msg { font-size: 12.5px; min-height: 18px; }
+    .msg { font-size: 12.5px; color: var(--fg2); }
     .msg.err { color: var(--red); } .msg.ok { color: var(--green); }
-    .help { color: var(--fg2); font-size: 12.5px; padding: 0 16px 16px; }
-    .help ol { padding-left: 18px; display: grid; gap: 3px; }
-    a { color: var(--blue); text-decoration: none; cursor: pointer; }
-    a:hover { text-decoration: underline; }
-    /* interrupteur */
-    .sw { position: relative; flex: none; width: 44px; height: 26px; }
-    .sw input { position: absolute; opacity: 0; inset: 0; cursor: pointer; z-index: 1; }
-    .sw span { position: absolute; inset: 0; border-radius: 13px; background: rgba(255,255,255,.16); transition: background .25s; }
-    .sw span::after { content: ""; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.35); transition: transform .3s cubic-bezier(.22,1,.36,1); }
-    .sw input:checked + span { background: var(--green); }
-    .sw input:checked + span::after { transform: translateX(18px); }
-    .empty { padding: 14px 16px; color: var(--fg3); }
-    .count { color: var(--fg3); font-weight: 500; text-transform: none; letter-spacing: 0; margin-left: 6px; }
-    .addrow { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--line); color: var(--blue); font-weight: 600; cursor: pointer; }
-    .addrow:hover { background: rgba(255,255,255,.03); }
-    .addrow .plus { width: 34px; height: 34px; border-radius: 50%; border: 1.5px dashed rgba(10,132,255,.6); display: grid; place-items: center; font-size: 20px; font-weight: 400; }
-    .hide { display: none !important; }
-    .diag { display: grid; gap: 8px; padding: 14px 16px; }
-    .diag div { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .diag span:last-child { color: var(--fg2); font-size: 13px; text-align: right; }
-    .tag { font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 9px; background: rgba(255,255,255,.08); color: var(--fg2); }
-    .diag span.tag.ok { background: rgba(48,209,88,.15); color: var(--green); }
-    .diag span.tag.err { background: rgba(255,69,58,.15); color: var(--red); }
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 16px 16px; }
-    .actions:not(:has(.btn:not(.hide))) { padding-bottom: 0; }
-    code { background: var(--card2); padding: 1px 6px; border-radius: 6px; font: 12px Consolas, monospace; color: var(--fg); user-select: all; }
-    footer { margin-top: 28px; text-align: center; color: var(--fg3); font-size: 12px; }
-    .lang { margin-left: auto; display: flex; padding: 3px; gap: 2px; border-radius: 11px; background: var(--card); border: 1px solid var(--line); }
-    .lang button { height: 28px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--fg2); font: 600 12.5px inherit; font-family: inherit; cursor: pointer; }
-    .lang button.on { background: var(--card2); color: var(--fg); box-shadow: 0 1px 4px rgba(0,0,0,.35); }
-    .warn { margin: 0 16px 16px; padding: 10px 12px; border-radius: 10px; background: rgba(255,159,10,.1); border: 1px solid rgba(255,159,10,.3); color: #ffd28a; font-size: 12.5px; }
-    .row input[type=text].inline { width: 260px; }
-    select { flex: none; background: var(--card2); border: 1px solid var(--line); color: var(--fg); border-radius: 10px; padding: 7px 10px; font: inherit; outline: none; cursor: pointer; }
-    select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(10,132,255,.25); }
+
+    .sw { position: relative; flex: none; width: 38px; height: 22px; }
+    .sw input { position: absolute; opacity: 0; inset: 0; cursor: pointer; z-index: 1; margin: 0; }
+    .sw span { position: absolute; inset: 0; border-radius: 11px; background: rgba(255,255,255,.16); transition: background .25s; }
+    .sw span::after { content: ""; position: absolute; left: 2px; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+    .sw input:checked + span { background: var(--blue); }
+    .sw input:checked + span::after { transform: translateX(16px); }
+    .sw input:disabled { cursor: default; }
+    .sw input:disabled + span { opacity: .5; }
+
+    .seg { display: flex; padding: 2px; gap: 2px; border-radius: 8px; background: rgba(255,255,255,.08); }
+    .seg button { height: 24px; padding: 0 12px; border-radius: 6px; color: var(--fg2); font-weight: 500; font-size: 12.5px; }
+    .seg button.on { background: #636366; color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35); }
+
+    .tag { font-size: 12px; font-weight: 500; padding: 2px 9px; border-radius: 10px; background: rgba(255,255,255,.08); color: var(--fg2); white-space: nowrap; }
+    .tag.ok { background: rgba(48,209,88,.15); color: var(--green); }
+    .tag.err { background: rgba(255,69,58,.15); color: var(--red); }
+    code { background: var(--box2); padding: 1px 6px; border-radius: 5px; font: 12px Consolas, monospace; color: var(--fg); user-select: all; }
+
+    /* « Comment faire ? » repliable */
+    .how { position: relative; }
+    .how summary { list-style: none; display: flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 14px; color: var(--blue); font-weight: 500; cursor: pointer; }
+    .how summary::-webkit-details-marker { display: none; }
+    .how summary::after { content: ""; width: 7px; height: 7px; border-right: 1.6px solid currentColor; border-bottom: 1.6px solid currentColor; transform: rotate(-45deg); margin-left: auto; transition: transform .25s; }
+    .how[open] summary::after { transform: rotate(45deg); }
+    .how summary:hover { background: rgba(255,255,255,.03); }
+    .how ol { padding: 0 16px 14px 34px; display: grid; gap: 6px; color: var(--fg2); font-size: 12.5px; user-select: text; }
+    .how ol b { color: var(--fg); font-weight: 600; }
+    .warn { display: flex; gap: 10px; margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: rgba(255,159,10,.08); border: 1px solid rgba(255,159,10,.25); color: #ffd28a; font-size: 12.5px; }
+    .warn::before { content: "!"; flex: none; width: 18px; height: 18px; border-radius: 50%; background: var(--orange); color: #000; font-weight: 800; font-size: 12px; display: grid; place-items: center; margin-top: 1px; }
+
+    /* résultats de recherche */
+    .res { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 46px; padding: 7px 14px; text-align: left; position: relative; }
+    .res + .res::before { content: ""; position: absolute; top: 0; left: 48px; right: 0; height: 1px; background: var(--sep); }
+    .res:hover { background: rgba(255,255,255,.04); }
+    .res .t { font-weight: 500; }
+    .res .d { color: var(--fg2); font-size: 12px; }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo"><i></i></div>
-    <div>
-      <h1>WowIsland</h1>
-      <div class="sub">Musique, codes Gmail, iPhone et notifications — en haut de ton écran.</div>
+<div class="app">
+  <aside class="side">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+      <input type="text" id="q" placeholder="Rechercher" autocomplete="off" spellcheck="false" />
     </div>
-    <div class="lang" id="lang" data-noi18n><button data-lang="fr">Français</button><button data-lang="en">English</button></div>
-  </header>
+    <div class="side-scroll">
+      <button class="me" data-go="general">
+        <div class="logo"><i></i></div>
+        <div><div class="me-t">WowIsland</div><div class="me-d">Version <span id="side-ver">…</span> <b id="side-upd" class="hide">· mise à jour</b></div></div>
+      </button>
+      <nav id="nav">
+        <div class="grp">
+          <button class="nav" data-go="general"><span class="ic" style="--c1:#98989f;--c2:#6c6c72"><svg viewBox="0 0 24 24"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg></span><span class="lbl">Général</span><span class="st" id="st-general"></span></button>
+          <button class="nav" data-go="island"><span class="ic" style="--c1:#48484f;--c2:#1c1c20"><svg viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="6" rx="3" fill="#fff" stroke="none"/></svg></span><span class="lbl">Boutons de l'île</span></button>
+          <button class="nav" data-go="notifs"><span class="ic" style="--c1:#ff5f57;--c2:#e0352b"><svg viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg></span><span class="lbl">Notifications</span></button>
+        </div>
+        <div class="grp">
+          <button class="nav" data-go="gmail"><span class="ic" style="--c1:#ff6b5e;--c2:#d93025"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="m4 7.5 8 6 8-6"/></svg></span><span class="lbl">Gmail et codes</span><span class="st" id="st-gmail"></span></button>
+          <button class="nav" data-go="iphone"><span class="ic" style="--c1:#6e7b8c;--c2:#45505e"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.6"/><path d="M11 18h2"/></svg></span><span class="lbl">iPhone</span><span class="st" id="st-iphone"></span></button>
+          <button class="nav" data-go="spotify"><span class="ic" style="--c1:#2fe06d;--c2:#14a346"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></span><span class="lbl">Spotify</span><span class="st" id="st-spotify"></span></button>
+          <button class="nav" data-go="discord"><span class="ic" style="--c1:#7f89ff;--c2:#4f5bd5"><svg viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></span><span class="lbl">Discord</span><span class="st" id="st-discord"></span></button>
+        </div>
+        <div class="grp">
+          <button class="nav" data-go="downloads"><span class="ic" style="--c1:#3d9bff;--c2:#0a6cdc"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span><span class="lbl">Téléchargements</span></button>
+          <button class="nav" data-go="phone"><span class="ic" style="--c1:#3ed6c4;--c2:#12998a"><svg viewBox="0 0 24 24"><path d="M21 3 3 10.5l7 3 3 7.5z"/><path d="m10 13.5 4.5-4.5"/></svg></span><span class="lbl">Envoyer sur le tel</span><span class="st" id="st-phone"></span></button>
+          <button class="nav" data-go="claude"><span class="ic" style="--c1:#f0915f;--c2:#d0603a"><svg viewBox="0 0 24 24"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6 6 18"/></svg></span><span class="lbl">Claude Code</span></button>
+          <button class="nav" data-go="games"><span class="ic" style="--c1:#b17cff;--c2:#7d3ff0"><svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><path d="M15.5 11.5h.01M17.8 13.8h.01" stroke-width="2.8"/></svg></span><span class="lbl">Jeux</span></button>
+        </div>
+      </nav>
+    </div>
+  </aside>
 
-  <h2>Comptes Gmail<span class="count" id="acc-count"></span></h2>
-  <div class="card">
-    <div id="accounts"></div>
-    <div class="addrow hide" id="addrow"><div class="plus">+</div>Ajouter un autre compte Gmail</div>
-    <div class="form" id="form" style="border-top:1px solid var(--line)">
-      <input type="email" id="email" placeholder="adresse@gmail.com" autocomplete="off" />
-      <input type="password" id="pass" placeholder="Mot de passe d'application (16 lettres)" autocomplete="off" />
-      <div style="display:flex;gap:10px;align-items:center">
-        <button class="btn primary" id="add">Connecter</button>
-        <button class="btn ghost hide" id="cancel">Annuler</button>
-        <div class="msg" id="msg"></div>
+  <main id="main">
+    <!-- ======================= Général ======================= -->
+    <section class="page" data-page="general">
+      <div class="hero"><div class="logo" style="width:54px;height:54px;border-radius:13px"><i style="width:34px;height:12px;border-radius:6px"></i></div><div><h1>WowIsland</h1><p>Musique, codes, iPhone et notifications, en haut de ton écran.</p></div></div>
+      <div class="box">
+        <div class="row"><div><div class="t">Langue</div></div><div class="seg" id="lang" data-noi18n><button data-lang="fr">Français</button><button data-lang="en">English</button></div></div>
+        <div class="row"><div><div class="t">Lancer au démarrage de Windows</div></div><label class="sw"><input type="checkbox" data-k="autostart"><span></span></label></div>
+        <div class="row"><div><div class="t">Masquer en plein écran</div><div class="d">Jeux, vidéos, présentations (les codes restent affichés).</div></div><label class="sw"><input type="checkbox" data-k="hide_in_fullscreen"><span></span></label></div>
+        <div class="row"><div><div class="t">Volume et luminosité dans l'île</div><div class="d">Les touches volume s'affichent dans l'île (à la place du cadre Windows).</div></div><label class="sw"><input type="checkbox" data-k="osd"><span></span></label></div>
+        <div class="row"><div><div class="t">Paroles dans l'île compacte</div><div class="d">Affiche la ligne en cours à la place du titre (si les paroles existent).</div></div><label class="sw"><input type="checkbox" data-k="lyrics_compact"><span></span></label></div>
       </div>
-    </div>
-    <div class="help">
-      <ol>
-        <li>Active la <a data-url="https://myaccount.google.com/signinoptions/twosv">validation en deux étapes</a> sur ton compte Google.</li>
-        <li>Crée un <a data-url="https://myaccount.google.com/apppasswords">mot de passe d'application</a> (nom : « WowIsland »).</li>
-        <li>Colle-le ici. Il est chiffré avec ta session Windows (DPAPI), jamais stocké en clair.</li>
-        <li>Ajoute autant de comptes que tu veux : chacun a son propre mot de passe d'application.</li>
-      </ol>
-    </div>
-  </div>
-
-  <h2>Codes de vérification</h2>
-  <div class="card">
-    <div class="row"><div><div class="t">Copier automatiquement le code</div><div class="d">Le code apparaît dans l'island et il est déjà dans ton presse-papiers : tu n'as plus qu'à coller.</div></div><label class="sw"><input type="checkbox" data-k="auto_copy_otp"><span></span></label></div>
-    <div class="row"><div><div class="t">Effacer le code après 90 s</div><div class="d">Vide le presse-papiers s'il contient encore le code.</div></div><label class="sw"><input type="checkbox" data-k="clear_otp_clipboard"><span></span></label></div>
-    <div class="row"><div><div class="t">Afficher tous les nouveaux mails</div><div class="d">Pas seulement ceux qui contiennent un code.</div></div><label class="sw"><input type="checkbox" data-k="show_all_mails"><span></span></label></div>
-  </div>
-
-  <h2>Notifications</h2>
-  <div class="card">
-    <div class="row"><div><div class="t">Notifications seulement dans l'île</div><div class="d">Décoche « bannières » et « centre de notifications » de Windows pour toutes les applis (remis comme avant si tu désactives). Effet complet au prochain démarrage du PC.</div></div><label class="sw"><input type="checkbox" data-k="notif_island_only"><span></span></label></div>
-    <div class="row"><div><div class="t">Son de notification doux</div><div class="d">Remplace le son de notification de Windows par un carillon. <a href="#" id="notif-preview">Écouter</a></div></div><label class="sw"><input type="checkbox" data-k="notif_sound"><span></span></label></div>
-    <div class="row"><div><div class="t">Notifications du PC</div><div class="d">Discord, WhatsApp, Teams… Les notifs de l'iPhone passent par « Lien avec le téléphone ».</div></div><label class="sw"><input type="checkbox" data-k="show_pc_notifications"><span></span></label></div>
-    <div class="row" style="display:block">
-      <div class="t" style="margin-bottom:8px">Applis ignorées</div>
-      <textarea id="block" placeholder="Une appli par ligne, ex. : Microsoft Edge"></textarea>
-    </div>
-    <div class="row"><div><div class="t">Accès aux notifications Windows</div><div class="d">À autoriser si les notifs n'apparaissent pas.</div></div><button class="btn ghost" id="notifset">Ouvrir</button></div>
-  </div>
-
-  <h2>Spotify · volume de l'appli</h2>
-  <div class="card">
-    <div class="row">
-      <div class="acc"><div class="av" style="background:linear-gradient(145deg,#1ed760,#0f7a37)">♪</div><div><div class="t">Volume de Spotify dans l'île</div><div class="d"><span class="dot" id="sp-dot"></span><span id="sp-state">…</span></div></div></div>
-      <button class="btn danger hide" id="sp-off">Déconnecter</button>
-    </div>
-    <div class="form" id="sp-form" style="border-top:1px solid var(--line)">
-      <input type="text" id="sp-id" placeholder="Client ID de ton appli Spotify (32 caractères)" autocomplete="off" spellcheck="false" />
-      <div style="display:flex;gap:10px;align-items:center">
-        <button class="btn primary" id="sp-connect">Connecter Spotify</button>
-        <div class="msg" id="sp-msg"></div>
+      <div class="gh">Mises à jour</div>
+      <div class="box">
+        <div class="row"><div><div class="t">Version <span id="app-ver">…</span></div><div class="d" id="upd-msg">Les nouveautés de chaque version sont sur GitHub.</div></div><div class="end"><button class="btn" id="upd-check">Chercher une mise à jour</button></div></div>
+        <div class="row"><div><div class="t">Mises à jour automatiques</div><div class="d">Au premier lancement de la journée, WowIsland regarde sur GitHub s'il y a une nouvelle version et te la propose dans l'île.</div></div><label class="sw"><input type="checkbox" data-k="update_check"><span></span></label></div>
+        <div class="row"><div><div class="t">Notes de version</div></div><div class="end"><button class="btn" data-url="https://github.com/Belius303/wowisland/releases">Ouvrir sur GitHub</button></div></div>
       </div>
-    </div>
-    <div class="help">
-      <ol>
-        <li>Optionnel : sans ça, la musique s'affiche quand même dans l'île. Ça ajoute seulement le réglage du volume <b>de Spotify</b> (ou de Spotifast) depuis l'île.</li>
-        <li>Ouvre le <a data-url="https://developer.spotify.com/dashboard">tableau de bord Spotify Developer</a>, connecte-toi et crée une appli (<b>Create app</b>, n'importe quel nom, coche <b>Web API</b>). Si tu en as déjà une (pour Spotifast par exemple), réutilise-la.</li>
-        <li>Dans <b>Settings → Redirect URIs</b>, ajoute <code id="sp-redirect">http://127.0.0.1:8990/callback</code> et enregistre.</li>
-        <li>Copie son <b>Client ID</b> ici puis clique sur « Connecter Spotify » et accepte dans le navigateur.</li>
-        <li>Le curseur sous la musique règle alors le volume <b>dans Spotify</b> (comme son propre curseur), pas celui de Windows. Seul un jeton de renouvellement est gardé, chiffré avec ta session Windows.</li>
-      </ol>
-    </div>
-  </div>
-
-  <h2>Discord · salon vocal</h2>
-  <div class="card">
-    <div class="row">
-      <div class="acc"><div class="av" style="background:linear-gradient(145deg,#7c86ff,#4752c4)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4.5 10v4M8.5 7v10M12.5 4.5v15M16.5 8v8M20.5 10.5v3"/></svg></div><div><div class="t">Salon vocal dans l'île</div><div class="d"><span class="dot" id="dc-dot"></span><span id="dc-state">…</span></div></div></div>
-      <button class="btn danger hide" id="dc-off">Déconnecter</button>
-    </div>
-    <div class="form" id="dc-form" style="border-top:1px solid var(--line)">
-      <input type="text" id="dc-id" placeholder="Client ID (Application ID) de ton appli Discord" autocomplete="off" spellcheck="false" />
-      <input type="password" id="dc-secret" placeholder="Client Secret" autocomplete="off" spellcheck="false" />
-      <div style="display:flex;gap:10px;align-items:center">
-        <button class="btn primary" id="dc-connect">Connecter Discord</button>
-        <div class="msg" id="dc-msg"></div>
+      <div class="box">
+        <div class="row"><div><div class="t">Relancer WowIsland</div><div class="d">Recharge l'appli (aussi dans le clic droit de l'icône près de l'horloge).</div></div><div class="end"><button class="btn" id="restart">Relancer</button></div></div>
       </div>
-    </div>
-    <div class="help">
-      <ol>
-        <li>Optionnel : affiche ton salon vocal Discord dans l'île. Discord ne le permet qu'avec une appli développeur à toi (gratuit, 2 minutes).</li>
-        <li>Ouvre le <a data-url="https://discord.com/developers/applications">portail développeur Discord</a>, clique sur <b>New Application</b> (n'importe quel nom) ou ouvre une appli existante.</li>
-        <li>Dans <b>OAuth2 → Redirects</b>, ajoute <code id="dc-redirect">http://localhost</code> et enregistre.</li>
-        <li>Copie le <b>Client ID</b> et le <b>Client Secret</b> (OAuth2) ici, garde l'appli Discord ouverte sur le PC, puis clique sur « Connecter Discord » et accepte la fenêtre <b>Autoriser</b> qui s'affiche dans Discord.</li>
-        <li>Ensuite l'île montre ton salon vocal (serveur, groupe ou appel privé) : qui est là, qui parle, et des boutons pour couper le micro, le son, ou quitter. Le secret et le jeton sont chiffrés avec ta session Windows.</li>
-      </ol>
-    </div>
-  </div>
+      <div class="tip">Clic droit sur une alerte pour la fermer · Survole l'island pour l'ouvrir</div>
+    </section>
 
-  <h2>Télécharger · vidéos, musique, GIF</h2>
-  <div class="card">
-    <div class="help" style="padding-top:14px">
-      <ol>
-        <li>Bouton <b>Télécharger</b> de l'île : colle un lien (YouTube, TikTok, Instagram, X, Reddit, Twitch… et des centaines d'autres sites). Si tu viens de copier un lien, l'île le propose toute seule.</li>
-        <li>Choisis <b>Vidéo</b> (qualité), <b>MP3</b>, <b>GIF</b> ou <b>Texte</b> (transcription), et éventuellement un <b>extrait</b>. Pour un mix YouTube, choisis le nombre de titres : ceux déjà dans Ma musique sont sautés.</li>
-        <li>La première fois, l'île installe les outils nécessaires depuis leurs pages officielles (yt-dlp, ffmpeg, Deno, environ 150 Mo) puis les met à jour toute seule.</li>
-        <li>Les fichiers vont dans <code>Téléchargements\Île</code>. Liens Spotify / Deezer : chaque titre est retrouvé sur YouTube et enregistré en MP3 avec sa pochette. Les contenus protégés (Netflix, Disney+…) sont impossibles.</li>
-        <li>Sur chaque téléchargement : <b>Ma musique</b> (le lecteur de l'île), <b>Spotify</b> (dossier des fichiers locaux), <b>📱</b> (envoi sur le tel, voir ci-dessous).</li>
-      </ol>
-    </div>
-    <div class="row" style="border-top:1px solid var(--line)">
-      <div><div class="t">Cookies du navigateur</div><div class="d">Si YouTube demande de prouver que tu n'es pas un robot : le téléchargeur se présente avec ta session de ce navigateur (sois connecté à YouTube dedans). Les cookies sont lus sur ton PC au moment du téléchargement, jamais copiés ni envoyés ailleurs. Firefox et Zen marchent le mieux : Chrome, Edge et Brave bloquent souvent la lecture.</div></div>
-      <select id="yt-cookies">
-        <option value="">Désactivé</option>
-        <option value="firefox">Firefox</option>
-        <option value="zen">Zen</option>
-        <option value="chrome">Chrome</option>
-        <option value="edge">Edge</option>
-        <option value="brave">Brave</option>
-        <option value="opera">Opera</option>
-        <option value="vivaldi">Vivaldi</option>
-      </select>
-    </div>
-    <div class="warn">Ne télécharge que ce que tu as le droit de télécharger : tes propres contenus, ceux sous licence libre ou ceux que l'auteur permet de télécharger.</div>
-  </div>
+    <!-- ======================= Boutons de l'île ======================= -->
+    <section class="page" data-page="island">
+      <div class="hero"><span class="ic big" style="--c1:#48484f;--c2:#1c1c20"><svg viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="6" rx="3" fill="#fff" stroke="none"/></svg></span><div><h1>Boutons de l'île</h1><p>Les outils affichés quand tu survoles l'île.</p></div></div>
+      <div class="box">
+        <div class="row"><div><div class="t">Capturer une zone</div></div><label class="sw"><input type="checkbox" data-tool-k="region"><span></span></label></div>
+        <div class="row"><div><div class="t">Capturer l'écran</div></div><label class="sw"><input type="checkbox" data-tool-k="full"><span></span></label></div>
+        <div class="row"><div><div class="t">Minuteur</div></div><label class="sw"><input type="checkbox" data-k="show_timer"><span></span></label></div>
+        <div class="row"><div><div class="t">Volume</div><div class="d">Volume des sorties et de chaque appli.</div></div><label class="sw"><input type="checkbox" data-tool-k="volume"><span></span></label></div>
+        <div class="row"><div><div class="t">Presse-papiers</div></div><label class="sw"><input type="checkbox" data-tool-k="clip"><span></span></label></div>
+        <div class="row"><div><div class="t">Notifications</div></div><label class="sw"><input type="checkbox" data-tool-k="notifs"><span></span></label></div>
+        <div class="row"><div><div class="t">Télécharger</div><div class="d">Vidéos et musiques depuis un lien.</div></div><label class="sw"><input type="checkbox" data-tool-k="grab"><span></span></label></div>
+        <div class="row"><div><div class="t">Ma musique</div><div class="d">Le lecteur de tes MP3 (dossier Musique\Spotify (Île) et Téléchargements\Île).</div></div><label class="sw"><input type="checkbox" data-tool-k="music"><span></span></label></div>
+        <div class="row"><div><div class="t">Claude Code</div></div><label class="sw"><input type="checkbox" data-tool-k="claude"><span></span></label></div>
+        <div class="row"><div><div class="t">Réglages</div><div class="d">Toujours affiché (sinon tu ne pourrais plus revenir ici depuis l'île).</div></div><label class="sw"><input type="checkbox" checked disabled><span></span></label></div>
+      </div>
+    </section>
 
-  <h2>Envoyer sur le tel · LocalSend</h2>
-  <div class="card">
-    <div class="row">
-      <div class="acc"><div class="av" style="background:linear-gradient(145deg,#4fd8c9,#13867a)">📱</div><div><div class="t">Appareil choisi</div><div class="d" id="ls-state">…</div></div></div>
-      <button class="btn danger hide" id="ls-forget">Oublier</button>
-    </div>
-    <div class="help">
-      <ol>
-        <li>Installe <a data-url="https://localsend.org/download">LocalSend</a> sur ton tel (App Store / Play Store, gratuit et open source). Rien à installer sur le PC : l'île parle LocalSend toute seule.</li>
-        <li>Le tel et le PC doivent être sur le <b>même réseau</b> (le PC peut être en Ethernet sur la même box). Ouvre LocalSend sur le tel.</li>
-        <li>Dans <b>Télécharger</b>, clique sur <b>📱</b> à côté d'un fichier. La première fois, choisis ton tel dans la liste : l'île s'en souvient.</li>
-        <li>Accepte sur le tel (ou active la <b>réception rapide</b> dans les réglages de LocalSend pour ne plus avoir à accepter). Clic droit sur 📱 : choisir un autre appareil.</li>
-      </ol>
-    </div>
-  </div>
+    <!-- ======================= Notifications ======================= -->
+    <section class="page" data-page="notifs">
+      <div class="hero"><span class="ic big" style="--c1:#ff5f57;--c2:#e0352b"><svg viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg></span><div><h1>Notifications</h1><p>Les notifications du PC et de l'iPhone, dans l'île.</p></div></div>
+      <div class="box">
+        <div class="row"><div><div class="t">Notifications du PC</div><div class="d">Discord, WhatsApp, Teams… Celles de l'iPhone passent par <a data-go="iphone">Mobile connecté</a>.</div></div><label class="sw"><input type="checkbox" data-k="show_pc_notifications"><span></span></label></div>
+        <div class="row"><div><div class="t">Notifications seulement dans l'île</div><div class="d">Décoche « bannières » et « centre de notifications » de Windows pour toutes les applis (remis comme avant si tu désactives). Effet complet au prochain démarrage du PC.</div></div><label class="sw"><input type="checkbox" data-k="notif_island_only"><span></span></label></div>
+        <div class="row"><div><div class="t">Son de notification doux</div><div class="d">Remplace le son de notification de Windows par un carillon. <a href="#" id="notif-preview">Écouter</a></div></div><label class="sw"><input type="checkbox" data-k="notif_sound"><span></span></label></div>
+        <div class="row"><div><div class="t">Accès aux notifications Windows</div><div class="d">À autoriser si les notifs n'apparaissent pas.</div></div><div class="end"><button class="btn" id="notifset">Ouvrir</button></div></div>
+      </div>
+      <div class="gh">Applis ignorées</div>
+      <div class="box">
+        <div class="row col"><textarea id="block" placeholder="Une appli par ligne, ex. : Microsoft Edge" style="margin:0"></textarea></div>
+      </div>
+    </section>
 
-  <h2>Claude Code</h2>
-  <div class="card">
-    <div class="row" style="display:block">
-      <div class="t" style="margin-bottom:8px">Dossier de travail</div>
-      <input type="text" id="claude-dir" placeholder="Documents (par défaut)" autocomplete="off" spellcheck="false" />
-    </div>
-    <div class="help" style="border-top:1px solid var(--line);padding-top:14px">
-      <ol>
-        <li>Le bouton <b>Claude Code</b> de l'île ouvre une mini-session de Claude Code, l'assistant d'Anthropic. Il faut un abonnement Claude (Pro ou Max) ou un compte API.</li>
-        <li>Installe <a data-url="https://docs.anthropic.com/en/docs/claude-code/setup">Claude Code</a> sur le PC, puis connecte-toi avec le bouton <b>Se connecter</b> de l'île (ou la commande <code>claude</code> une fois dans un terminal).</li>
-        <li>L'île affiche aussi tes quotas d'utilisation (lus avec la connexion de Claude Code, jamais copiés ailleurs).</li>
-      </ol>
-    </div>
-    <div class="warn">Claude y travaille en mode « tout autorisé » : il peut créer, modifier ou supprimer des fichiers et lancer des commandes <b>sans demander</b>, dans le dossier de travail ci-dessus. Choisis un dossier où ce n'est pas grave.</div>
-  </div>
+    <!-- ======================= Gmail ======================= -->
+    <section class="page" data-page="gmail">
+      <div class="hero"><span class="ic big" style="--c1:#ff6b5e;--c2:#d93025"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="m4 7.5 8 6 8-6"/></svg></span><div><h1>Gmail et codes</h1><p>Les codes de vérification arrivent dans l'île, déjà copiés.</p></div></div>
+      <div class="gh">Comptes Gmail<span id="acc-count"></span></div>
+      <div class="box">
+        <div id="accounts"></div>
+        <button class="addrow hide" id="addrow"><span class="plus">+</span>Ajouter un autre compte Gmail</button>
+        <div class="form" id="form">
+          <input type="email" id="email" placeholder="adresse@gmail.com" autocomplete="off" />
+          <input type="password" id="pass" placeholder="Mot de passe d'application (16 lettres)" autocomplete="off" />
+          <div class="line">
+            <button class="btn primary" id="add">Connecter</button>
+            <button class="btn hide" id="cancel">Annuler</button>
+            <div class="msg" id="msg"></div>
+          </div>
+        </div>
+        <details class="how">
+          <summary>Comment ajouter un compte ?</summary>
+          <ol>
+            <li>Active la <a data-url="https://myaccount.google.com/signinoptions/twosv">validation en deux étapes</a> sur ton compte Google.</li>
+            <li>Crée un <a data-url="https://myaccount.google.com/apppasswords">mot de passe d'application</a> (nom : « WowIsland »).</li>
+            <li>Colle-le ici. Il est chiffré avec ta session Windows (DPAPI), jamais stocké en clair.</li>
+            <li>Ajoute autant de comptes que tu veux : chacun a son propre mot de passe d'application.</li>
+          </ol>
+        </details>
+      </div>
+      <div class="gh">Codes de vérification</div>
+      <div class="box">
+        <div class="row"><div><div class="t">Copier automatiquement le code</div><div class="d">Le code apparaît dans l'island et il est déjà dans ton presse-papiers : tu n'as plus qu'à coller.</div></div><label class="sw"><input type="checkbox" data-k="auto_copy_otp"><span></span></label></div>
+        <div class="row"><div><div class="t">Effacer le code après 90 s</div><div class="d">Vide le presse-papiers s'il contient encore le code.</div></div><label class="sw"><input type="checkbox" data-k="clear_otp_clipboard"><span></span></label></div>
+        <div class="row"><div><div class="t">Afficher tous les nouveaux mails</div><div class="d">Pas seulement ceux qui contiennent un code.</div></div><label class="sw"><input type="checkbox" data-k="show_all_mails"><span></span></label></div>
+      </div>
+    </section>
 
-  <h2>Jeux · coach League of Legends</h2>
-  <div class="card">
-    <div class="help" style="padding-top:14px">
-      <ol>
-        <li>Rien à régler : l'île reconnaît le jeu lancé (Steam, Epic, Riot, jeux locaux…) et affiche son logo et ton temps de jeu. Au repos, elle propose de relancer le dernier jeu joué.</li>
-        <li>En partie de <b>League of Legends</b>, l'île lit l'état de la partie avec l'API locale officielle de Riot et les stats publiques d'OP.GG : un conseil court qui change selon la partie, et au survol le matchup et le build.</li>
-        <li>Pour que l'île reste visible pendant que tu joues, désactive « Masquer en plein écran » ci-dessous ou joue en <b>fenêtré sans bordure</b>.</li>
-      </ol>
-    </div>
-  </div>
+    <!-- ======================= iPhone ======================= -->
+    <section class="page" data-page="iphone">
+      <div class="hero"><span class="ic big" style="--c1:#6e7b8c;--c2:#45505e"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.6"/><path d="M11 18h2"/></svg></span><div><h1>iPhone</h1><p>Batterie en USB, et notifications avec Mobile connecté.</p></div></div>
+      <div class="box">
+        <div class="row"><div><div class="t">État</div><div class="d" id="d-state">…</div></div><div class="end"><div class="msg" id="d-msg"></div></div></div>
+      </div>
+      <div class="gh">Notifications</div>
+      <div class="box">
+        <div class="row"><div><div class="t">Mobile connecté</div><div class="d">L'appli de Microsoft qui relaie les notifications de l'iPhone. Elle doit tourner en arrière-plan.</div></div><div class="end"><span id="d-link" class="tag">…</span><button class="btn primary hide" id="get-link" data-url="ms-windows-store://pdp/?productid=9NMPJ99VJBWV">Télécharger</button><button class="btn primary hide" id="open-link">Ouvrir</button></div></div>
+      </div>
+      <div class="gh">Batterie</div>
+      <div class="box">
+        <div class="row"><div><div class="t">Appareils Apple</div><div class="d">L'appli d'Apple qui donne accès à l'iPhone en USB.</div></div><div class="end"><span id="d-apple" class="tag">…</span><button class="btn primary hide" id="get-apple" data-url="ms-windows-store://pdp/?productid=9NP83LWLPZ9K">Télécharger</button></div></div>
+        <div class="row"><div><div class="t">Connexion USB Apple</div><div class="d">Service usbmuxd</div></div><div class="end"><span id="d-service" class="tag">…</span><button class="btn primary hide" id="repair">Réparer le service (admin)</button></div></div>
+        <div class="row"><div><div class="t">iPhone branché en USB</div></div><div class="end"><span id="d-usb" class="tag">…</span></div></div>
+      </div>
+      <div class="box">
+        <details class="how">
+          <summary>Comment configurer ?</summary>
+          <ol>
+            <li><b>Batterie :</b> installe <a data-url="ms-windows-store://pdp/?productid=9NP83LWLPZ9K">Appareils Apple</a> (Microsoft Store), branche l'iPhone en USB et appuie sur « Faire confiance ».</li>
+            <li><b>Notifications :</b> installe <a data-url="ms-windows-store://pdp/?productid=9NMPJ99VJBWV">Mobile connecté</a> (Microsoft Store), ouvre-le et associe l'iPhone (QR code + appli « Lien avec Windows » sur l'iPhone). Dans ses réglages, laisse « Démarrer à l'ouverture de session » activé.</li>
+            <li>Sur l'iPhone : <i>Réglages → Bluetooth → ton PC → (i)</i>, active <b>Afficher les notifications</b> et <b>Partager les notifications système</b>. iPhone verrouillé ou non, ça marche pareil.</li>
+            <li><b>N'afficher que l'île :</b> dans <a data-url="ms-settings:notifications">Paramètres → Système → Notifications</a>, ouvre <b>Mobile connecté</b> et décoche seulement <b>Afficher les bannières de notification</b>. Laisse les notifications activées : c'est là que l'île les lit.</li>
+          </ol>
+        </details>
+      </div>
+    </section>
 
-  <h2>Général</h2>
-  <div class="card">
-    <div class="row"><div><div class="t">Masquer en plein écran</div><div class="d">Jeux, vidéos, présentations (les codes restent affichés).</div></div><label class="sw"><input type="checkbox" data-k="hide_in_fullscreen"><span></span></label></div>
-    <div class="row"><div><div class="t">Volume et luminosité dans l'île</div><div class="d">Les touches volume s'affichent dans l'île (à la place du cadre Windows).</div></div><label class="sw"><input type="checkbox" data-k="osd"><span></span></label></div>
-    <div class="row"><div><div class="t">Paroles dans l'île compacte</div><div class="d">Affiche la ligne en cours à la place du titre (si les paroles existent).</div></div><label class="sw"><input type="checkbox" data-k="lyrics_compact"><span></span></label></div>
-    <div class="row"><div><div class="t">Lancer au démarrage de Windows</div></div><label class="sw"><input type="checkbox" data-k="autostart"><span></span></label></div>
-    <div class="row"><div><div class="t">Relancer WowIsland</div><div class="d">Recharge l'appli (aussi dans le clic droit de l'icône près de l'horloge).</div></div><button class="btn ghost" id="restart">Relancer</button></div>
-  </div>
+    <!-- ======================= Spotify ======================= -->
+    <section class="page" data-page="spotify">
+      <div class="hero"><span class="ic big" style="--c1:#2fe06d;--c2:#14a346"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></span><div><h1>Spotify</h1><p>Optionnel : règle le volume de Spotify depuis l'île. La musique s'affiche même sans.</p></div></div>
+      <div class="box">
+        <div class="row">
+          <div class="acc"><div class="av" style="background:linear-gradient(145deg,#1ed760,#0f7a37)">♪</div><div><div class="t">Volume de Spotify dans l'île</div><div class="d"><span class="dot" id="sp-dot"></span><span id="sp-state">…</span></div></div></div>
+          <button class="btn danger hide" id="sp-off">Déconnecter</button>
+        </div>
+        <div class="form" id="sp-form">
+          <input type="text" id="sp-id" placeholder="Client ID de ton appli Spotify (32 caractères)" autocomplete="off" spellcheck="false" />
+          <div class="line"><button class="btn primary" id="sp-connect">Connecter Spotify</button><div class="msg" id="sp-msg"></div></div>
+        </div>
+        <details class="how">
+          <summary>Comment connecter Spotify ?</summary>
+          <ol>
+            <li>Ouvre le <a data-url="https://developer.spotify.com/dashboard">tableau de bord Spotify Developer</a>, connecte-toi et crée une appli (<b>Create app</b>, n'importe quel nom, coche <b>Web API</b>). Si tu en as déjà une (pour Spotifast par exemple), réutilise-la.</li>
+            <li>Dans <b>Settings → Redirect URIs</b>, ajoute <code id="sp-redirect">http://127.0.0.1:8990/callback</code> et enregistre.</li>
+            <li>Copie son <b>Client ID</b> ici puis clique sur « Connecter Spotify » et accepte dans le navigateur.</li>
+            <li>Le curseur sous la musique règle alors le volume <b>dans Spotify</b> (comme son propre curseur), pas celui de Windows. Seul un jeton de renouvellement est gardé, chiffré avec ta session Windows.</li>
+          </ol>
+        </details>
+      </div>
+    </section>
 
-  <h2>Boutons de l'île</h2>
-  <div class="card">
-    <div class="row"><div><div class="t">Capturer une zone</div></div><label class="sw"><input type="checkbox" data-tool-k="region"><span></span></label></div>
-    <div class="row"><div><div class="t">Capturer l'écran</div></div><label class="sw"><input type="checkbox" data-tool-k="full"><span></span></label></div>
-    <div class="row"><div><div class="t">Minuteur</div></div><label class="sw"><input type="checkbox" data-k="show_timer"><span></span></label></div>
-    <div class="row"><div><div class="t">Volume</div><div class="d">Volume des sorties et de chaque appli.</div></div><label class="sw"><input type="checkbox" data-tool-k="volume"><span></span></label></div>
-    <div class="row"><div><div class="t">Presse-papiers</div></div><label class="sw"><input type="checkbox" data-tool-k="clip"><span></span></label></div>
-    <div class="row"><div><div class="t">Notifications</div></div><label class="sw"><input type="checkbox" data-tool-k="notifs"><span></span></label></div>
-    <div class="row"><div><div class="t">Télécharger</div><div class="d">Vidéos et musiques depuis un lien.</div></div><label class="sw"><input type="checkbox" data-tool-k="grab"><span></span></label></div>
-    <div class="row"><div><div class="t">Ma musique</div><div class="d">Le lecteur de tes MP3 (dossier Musique\Spotify (Île) et Téléchargements\Île).</div></div><label class="sw"><input type="checkbox" data-tool-k="music"><span></span></label></div>
-    <div class="row"><div><div class="t">Claude Code</div></div><label class="sw"><input type="checkbox" data-tool-k="claude"><span></span></label></div>
-    <div class="row"><div><div class="t">Réglages</div><div class="d">Toujours affiché (sinon tu ne pourrais plus revenir ici depuis l'île).</div></div><label class="sw"><input type="checkbox" checked disabled><span></span></label></div>
-  </div>
+    <!-- ======================= Discord ======================= -->
+    <section class="page" data-page="discord">
+      <div class="hero"><span class="ic big" style="--c1:#7f89ff;--c2:#4f5bd5"><svg viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></span><div><h1>Discord</h1><p>Ton salon vocal dans l'île. Il faut une appli développeur Discord à toi (gratuit, 2 minutes).</p></div></div>
+      <div class="box">
+        <div class="row">
+          <div class="acc"><div class="av" style="background:linear-gradient(145deg,#7c86ff,#4752c4)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4.5 10v4M8.5 7v10M12.5 4.5v15M16.5 8v8M20.5 10.5v3"/></svg></div><div><div class="t">Salon vocal dans l'île</div><div class="d"><span class="dot" id="dc-dot"></span><span id="dc-state">…</span></div></div></div>
+          <button class="btn danger hide" id="dc-off">Déconnecter</button>
+        </div>
+        <div class="form" id="dc-form">
+          <input type="text" id="dc-id" placeholder="Client ID (Application ID) de ton appli Discord" autocomplete="off" spellcheck="false" />
+          <input type="password" id="dc-secret" placeholder="Client Secret" autocomplete="off" spellcheck="false" />
+          <div class="line"><button class="btn primary" id="dc-connect">Connecter Discord</button><div class="msg" id="dc-msg"></div></div>
+        </div>
+        <details class="how">
+          <summary>Comment connecter Discord ?</summary>
+          <ol>
+            <li>Ouvre le <a data-url="https://discord.com/developers/applications">portail développeur Discord</a>, clique sur <b>New Application</b> (n'importe quel nom) ou ouvre une appli existante.</li>
+            <li>Dans <b>OAuth2 → Redirects</b>, ajoute <code id="dc-redirect">http://localhost</code> et enregistre.</li>
+            <li>Copie le <b>Client ID</b> et le <b>Client Secret</b> (OAuth2) ici, garde l'appli Discord ouverte sur le PC, puis clique sur « Connecter Discord » et accepte la fenêtre <b>Autoriser</b> qui s'affiche dans Discord.</li>
+            <li>Ensuite l'île montre ton salon vocal (serveur, groupe ou appel privé) : qui est là, qui parle, et des boutons pour couper le micro, le son, ou quitter. Le secret et le jeton sont chiffrés avec ta session Windows.</li>
+          </ol>
+        </details>
+      </div>
+    </section>
 
-  <h2>iPhone</h2>
-  <div class="card">
-    <div class="diag" id="diag">
-      <div><span>Connexion USB Apple (usbmuxd)</span><span id="d-service" class="tag">…</span></div>
-      <div><span>iPhone branché en USB</span><span id="d-usb" class="tag">…</span></div>
-      <div><span>Appareils Apple (batterie)</span><span id="d-apple" class="tag">…</span></div>
-      <div><span>Lien avec le téléphone (notifs)</span><span id="d-link" class="tag">…</span></div>
-      <div><span>État</span><span id="d-state">…</span></div>
-    </div>
-    <div class="actions">
-      <button class="btn primary hide" id="repair">Réparer le service (admin)</button>
-      <button class="btn ghost hide" id="get-apple"data-url="ms-windows-store://pdp/?productid=9NP83LWLPZ9K">Installer Appareils Apple</button>
-      <button class="btn primary hide" id="open-link">Ouvrir Lien avec le téléphone</button>
-      <button class="btn ghost hide" id="get-link" data-url="ms-windows-store://pdp/?productid=9NMPJ99VJBWV">Installer Lien avec le téléphone</button>
-      <div class="msg" id="d-msg" style="align-self:center"></div>
-    </div>
-    <div class="help" style="border-top:1px solid var(--line);padding-top:14px">
-      <ol>
-        <li><b>Batterie en USB :</b> installe <a data-url="ms-windows-store://pdp/?productid=9NP83LWLPZ9K">Appareils Apple</a> (Microsoft Store), branche l'iPhone et appuie sur « Faire confiance ».</li>
-        <li><b>Notifications de l'iPhone :</b> elles passent par l'appli <b>Lien avec le téléphone</b>, qui doit tourner (en arrière-plan). Ouvre-la, associe l'iPhone (QR code + appli « Lien avec Windows »), puis sur l'iPhone : <i>Réglages → Bluetooth → ton PC → (i)</i> et active <b>Afficher les notifications</b> et <b>Partager les notifications système</b>. Dans les réglages de Lien avec le téléphone, laisse « Démarrer à l'ouverture de session » activé. iPhone verrouillé ou non, ça marche pareil.</li>
-        <li><b>N'afficher que l'island :</b> dans <a data-url="ms-settings:notifications">Paramètres → Système → Notifications</a>, clique sur <b>Mobile connecté</b> (Lien avec le téléphone) et décoche seulement <b>Afficher les bannières de notification</b> (et le son si tu veux). Laisse les notifications <b>activées</b> et « Afficher dans le centre de notifications » coché : c'est là que l'island les lit.</li>
-      </ol>
-    </div>
-  </div>
+    <!-- ======================= Téléchargements ======================= -->
+    <section class="page" data-page="downloads">
+      <div class="hero"><span class="ic big" style="--c1:#3d9bff;--c2:#0a6cdc"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span><div><h1>Téléchargements</h1><p>Vidéos, musique, GIF et transcriptions depuis un lien.</p></div></div>
+      <div class="box">
+        <div class="row">
+          <div><div class="t">Cookies du navigateur</div><div class="d">Si YouTube demande de prouver que tu n'es pas un robot : le téléchargeur se présente avec ta session de ce navigateur (sois connecté à YouTube dedans). Les cookies sont lus sur ton PC au moment du téléchargement, jamais copiés ni envoyés ailleurs. Firefox et Zen marchent le mieux : Chrome, Edge et Brave bloquent souvent la lecture.</div></div>
+          <select id="yt-cookies">
+            <option value="">Désactivé</option>
+            <option value="firefox">Firefox</option>
+            <option value="zen">Zen</option>
+            <option value="chrome">Chrome</option>
+            <option value="edge">Edge</option>
+            <option value="brave">Brave</option>
+            <option value="opera">Opera</option>
+            <option value="vivaldi">Vivaldi</option>
+          </select>
+        </div>
+        <details class="how">
+          <summary>Comment ça marche ?</summary>
+          <ol>
+            <li>Bouton <b>Télécharger</b> de l'île : colle un lien (YouTube, TikTok, Instagram, X, Reddit, Twitch… et des centaines d'autres sites). Si tu viens de copier un lien, l'île le propose toute seule.</li>
+            <li>Choisis <b>Vidéo</b> (qualité), <b>MP3</b>, <b>GIF</b> ou <b>Texte</b> (transcription), et éventuellement un <b>extrait</b>. Pour un mix YouTube, choisis le nombre de titres : ceux déjà dans Ma musique sont sautés.</li>
+            <li>La première fois, l'île installe les outils nécessaires depuis leurs pages officielles (yt-dlp, ffmpeg, Deno, environ 150 Mo) puis les met à jour toute seule.</li>
+            <li>Les fichiers vont dans <code>Téléchargements\Île</code>. Liens Spotify / Deezer : chaque titre est retrouvé sur YouTube et enregistré en MP3 avec sa pochette. Les contenus protégés (Netflix, Disney+…) sont impossibles.</li>
+            <li>Sur chaque téléchargement : <b>Ma musique</b> (le lecteur de l'île), <b>Spotify</b> (dossier des fichiers locaux), <b>📱</b> (envoi sur le tel).</li>
+          </ol>
+        </details>
+      </div>
+      <div class="warn">Ne télécharge que ce que tu as le droit de télécharger : tes propres contenus, ceux sous licence libre ou ceux que l'auteur permet de télécharger.</div>
+    </section>
 
-  <footer>Clic droit sur une alerte pour la fermer · Survole l'island pour l'ouvrir</footer>
+    <!-- ======================= LocalSend ======================= -->
+    <section class="page" data-page="phone">
+      <div class="hero"><span class="ic big" style="--c1:#3ed6c4;--c2:#12998a"><svg viewBox="0 0 24 24"><path d="M21 3 3 10.5l7 3 3 7.5z"/><path d="m10 13.5 4.5-4.5"/></svg></span><div><h1>Envoyer sur le tel</h1><p>Tes téléchargements sur ton téléphone avec LocalSend, en Wi-Fi.</p></div></div>
+      <div class="box">
+        <div class="row">
+          <div class="acc"><div class="av" style="background:linear-gradient(145deg,#4fd8c9,#13867a)">📱</div><div><div class="t">Appareil choisi</div><div class="d" id="ls-state">…</div></div></div>
+          <button class="btn danger hide" id="ls-forget">Oublier</button>
+        </div>
+        <details class="how">
+          <summary>Comment ça marche ?</summary>
+          <ol>
+            <li>Installe <a data-url="https://localsend.org/download">LocalSend</a> sur ton tel (App Store / Play Store, gratuit et open source). Rien à installer sur le PC : l'île parle LocalSend toute seule.</li>
+            <li>Le tel et le PC doivent être sur le <b>même réseau</b> (le PC peut être en Ethernet sur la même box). Ouvre LocalSend sur le tel.</li>
+            <li>Dans <b>Télécharger</b>, clique sur <b>📱</b> à côté d'un fichier. La première fois, choisis ton tel dans la liste : l'île s'en souvient.</li>
+            <li>Accepte sur le tel (ou active la <b>réception rapide</b> dans les réglages de LocalSend pour ne plus avoir à accepter). Clic droit sur 📱 : choisir un autre appareil.</li>
+          </ol>
+        </details>
+      </div>
+    </section>
+
+    <!-- ======================= Claude Code ======================= -->
+    <section class="page" data-page="claude">
+      <div class="hero"><span class="ic big" style="--c1:#f0915f;--c2:#d0603a"><svg viewBox="0 0 24 24"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6 6 18"/></svg></span><div><h1>Claude Code</h1><p>Une mini-session Claude Code dans l'île, avec tes quotas d'utilisation.</p></div></div>
+      <div class="box">
+        <div class="row col"><div class="t">Dossier de travail</div><input type="text" id="claude-dir" placeholder="Documents (par défaut)" autocomplete="off" spellcheck="false" style="margin-top:8px" /></div>
+        <details class="how">
+          <summary>Comment ça marche ?</summary>
+          <ol>
+            <li>Le bouton <b>Claude Code</b> de l'île ouvre une mini-session de Claude Code, l'assistant d'Anthropic. Il faut un abonnement Claude (Pro ou Max) ou un compte API.</li>
+            <li>Installe <a data-url="https://docs.anthropic.com/en/docs/claude-code/setup">Claude Code</a> sur le PC, puis connecte-toi avec le bouton <b>Se connecter</b> de l'île (ou la commande <code>claude</code> une fois dans un terminal).</li>
+            <li>L'île affiche aussi tes quotas d'utilisation (lus avec la connexion de Claude Code, jamais copiés ailleurs).</li>
+          </ol>
+        </details>
+      </div>
+      <div class="warn">Claude y travaille en mode « tout autorisé » : il peut créer, modifier ou supprimer des fichiers et lancer des commandes <b>sans demander</b>, dans le dossier de travail ci-dessus. Choisis un dossier où ce n'est pas grave.</div>
+    </section>
+
+    <!-- ======================= Jeux ======================= -->
+    <section class="page" data-page="games">
+      <div class="hero"><span class="ic big" style="--c1:#b17cff;--c2:#7d3ff0"><svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><path d="M15.5 11.5h.01M17.8 13.8h.01" stroke-width="2.8"/></svg></span><div><h1>Jeux</h1><p>Rien à régler : l'île reconnaît le jeu lancé toute seule.</p></div></div>
+      <div class="box">
+        <div class="row"><div><div class="t">Jeu en cours</div><div class="d">Steam, Epic, Riot, jeux locaux… L'île affiche le logo et ton temps de jeu, et au repos propose de relancer le dernier jeu.</div></div></div>
+        <div class="row"><div><div class="t">Coach League of Legends</div><div class="d">En partie, un conseil court qui change selon la partie (API locale officielle de Riot et stats publiques d'OP.GG). Au survol : le matchup et le build.</div></div></div>
+        <div class="row"><div><div class="t">Garder l'île en jeu</div><div class="d">Désactive « Masquer en plein écran » dans <a data-go="general">Général</a>, ou joue en fenêtré sans bordure.</div></div></div>
+      </div>
+    </section>
+
+    <!-- ======================= Recherche ======================= -->
+    <section class="page" data-page="search">
+      <div class="gh" id="res-h" style="margin-top:0"></div>
+      <div class="box" id="res"></div>
+    </section>
+  </main>
+</div>
 
   <script src="i18n-en.js"></script>
   <script src="i18n.js"></script>
@@ -314,8 +459,69 @@
     const { invoke } = window.__TAURI__.core;
     const $ = (id) => document.getElementById(id);
     let s = null;
-
     const esc = (x) => String(x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    /* ---------------- navigation ---------------- */
+    const KEY = "settings-page";
+    let page = "general";
+    function go(p, focus) {
+      if (!document.querySelector(`.page[data-page="${p}"]`)) p = "general";
+      if (p !== "search") {
+        page = p;
+        try { localStorage.setItem(KEY, p); } catch {}
+        if ($("q").value) $("q").value = "";
+      }
+      document.querySelectorAll(".page").forEach((el) => el.classList.toggle("on", el.dataset.page === p));
+      document.querySelectorAll("[data-go]").forEach((el) => el.classList.toggle("on", p !== "search" && el.dataset.go === p && !el.closest(".page")));
+      $("main").scrollTop = 0;
+      if (focus) {
+        focus.scrollIntoView({ block: "center" });
+        focus.classList.remove("flash"); void focus.offsetWidth; focus.classList.add("flash");
+      }
+    }
+    document.addEventListener("click", (e) => {
+      const g = e.target.closest("[data-go]");
+      if (g) { e.preventDefault(); go(g.dataset.go); }
+    });
+    try { page = localStorage.getItem(KEY) || "general"; } catch {}
+    go(page);
+
+    /* ---------------- recherche (dans le texte affiché, donc aussi en anglais) ---------------- */
+    const norm = (x) => x.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+    const pageName = (p) => (document.querySelector(`.nav[data-go="${p}"] .lbl`) || document.querySelector(`.page[data-page="${p}"] h1`)).textContent;
+    const pageIcon = (p) => { const i = document.querySelector(`.nav[data-go="${p}"] .ic`); return i ? i.outerHTML : `<span class="ic" style="--c1:#98989f;--c2:#6c6c72"></span>`; };
+    let hits = [];
+    $("q").addEventListener("input", () => {
+      const q = norm($("q").value.trim());
+      if (!q) return go(page);
+      hits = [];
+      for (const pg of document.querySelectorAll(".page[data-page]")) {
+        const p = pg.dataset.page;
+        if (p === "search") continue;
+        if (norm(pageName(p)).includes(q) || norm(pg.querySelector(".hero p")?.textContent || "").includes(q)) hits.push({ p, el: null, t: pageName(p), d: pg.querySelector(".hero p")?.textContent || "" });
+        for (const r of pg.querySelectorAll(".row, .how")) {
+          const t = r.querySelector(".t, summary");
+          if (!t) continue;
+          if (norm(r.textContent).includes(q)) hits.push({ p, el: r, t: t.textContent, d: pageName(p) });
+        }
+      }
+      $("res-h").textContent = hits.length ? `${hits.length} résultat${hits.length > 1 ? "s" : ""}` : "Aucun résultat";
+      $("res").innerHTML = hits.slice(0, 40).map((h, i) => `<button class="res" data-hit="${i}">${pageIcon(h.p)}<div><div class="t">${esc(h.t)}</div><div class="d">${esc(h.d)}</div></div></button>`).join("");
+      $("res").classList.toggle("hide", !hits.length);
+      go("search");
+    });
+    $("q").addEventListener("keydown", (e) => {
+      if (e.key === "Escape") { $("q").value = ""; go(page); }
+      if (e.key === "Enter" && hits[0]) openHit(hits[0]);
+    });
+    function openHit(h) {
+      if (h.el && h.el.tagName === "DETAILS") h.el.open = true;
+      go(h.p, h.el);
+    }
+    $("res").addEventListener("click", (e) => { const b = e.target.closest("[data-hit]"); if (b) openHit(hits[+b.dataset.hit]); });
+    document.addEventListener("keydown", (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "f") { e.preventDefault(); $("q").focus(); $("q").select(); } });
+
+    /* ---------------- Gmail ---------------- */
     let adding = false;
     function showForm(on) {
       adding = on;
@@ -327,9 +533,37 @@
     }
     $("addrow").onclick = () => showForm(true);
     $("cancel").onclick = () => { $("msg").textContent = ""; showForm(false); };
+
+    /* ---------------- général, mises à jour ---------------- */
     $("restart").onclick = () => invoke("restart_app");
+    invoke("update_pending").then((p) => {
+      if (!p) return;
+      $("app-ver").textContent = p.version;
+      $("side-ver").textContent = p.version;
+      if (p.update) showUpdate(p.update);
+    }).catch(() => {});
+    function showUpdate(u) {
+      $("side-upd").classList.remove("hide");
+      $("st-general").innerHTML = `<span class="dot" style="background:var(--blue)"></span>`;
+      $("upd-msg").textContent = `Version ${u.version} disponible : regarde l'île.`;
+    }
+    window.__TAURI__.event.listen("update", (e) => showUpdate(e.payload));
+    $("upd-check").onclick = async () => {
+      const b = $("upd-check");
+      b.disabled = true;
+      $("upd-msg").textContent = "Recherche d'une mise à jour…";
+      try {
+        const u = await invoke("update_check_now");
+        if (u) showUpdate(u); else $("upd-msg").textContent = "WowIsland est à jour.";
+      } catch (e) {
+        $("upd-msg").textContent = `Vérification impossible : ${e}`;
+      } finally {
+        b.disabled = false;
+      }
+    };
     $("notif-preview").onclick = (e) => { e.preventDefault(); invoke("notif_sound_preview"); };
 
+    /* ---------------- iPhone ---------------- */
     async function diag() {
       try {
         const d = await invoke("iphone_diag");
@@ -339,19 +573,20 @@
         tag("d-apple", d.apple_devices_installed, "Installé", "Manquant");
         tag("d-link", d.phone_link_installed && d.phone_link_running, "Lancé", d.phone_link_installed ? "Pas lancé" : "Manquant");
         $("open-link").classList.toggle("hide", !d.phone_link_installed || d.phone_link_running);
+        $("get-link").classList.toggle("hide", d.phone_link_installed);
         if (d.phone_link_installed && !d.phone_link_ever_notified) {
-          $("d-link").title = "Lien avec le téléphone n'a encore jamais affiché de notification sur ce PC : associe l'iPhone dans l'appli et active « Afficher les notifications » sur l'iPhone.";
+          $("d-link").title = "Mobile connecté n'a encore jamais affiché de notification sur ce PC : associe l'iPhone dans l'appli et active « Afficher les notifications » sur l'iPhone.";
           if (d.phone_link_running) { $("d-link").className = "tag err"; $("d-link").textContent = "Aucune notif reçue"; }
         } else $("d-link").title = "";
         const l = d.last || {};
         $("d-state").textContent = l.connected && l.battery != null
           ? `${l.name || "iPhone"} · ${l.battery}%${l.charging ? " · en charge" : ""}`
           : l.error || (d.usb_present ? "En attente de l'iPhone…" : "Branche ton iPhone en USB");
+        $("st-iphone").textContent = l.connected && l.battery != null ? `${l.battery} %` : "";
         $("repair").classList.toggle("hide", d.service !== "stopped");
         $("get-apple").classList.toggle("hide", d.apple_devices_installed);
         $("repair").dataset.admin = d.apple_devices_installed ? "0" : "1";
         $("repair").textContent = d.apple_devices_installed ? "Démarrer la connexion iPhone" : "Réparer le service (admin)";
-        $("get-link").classList.toggle("hide", d.phone_link_installed);
       } catch (e) { $("d-state").textContent = String(e); }
     }
     $("repair").onclick = async () => {
@@ -366,6 +601,7 @@
     diag();
     setInterval(() => { if (!document.hidden) diag(); }, 4000);
 
+    /* ---------------- Spotify ---------------- */
     async function spInfo() {
       try {
         const i = await invoke("spotify_info");
@@ -375,9 +611,10 @@
         $("sp-state").textContent = i.connected ? "Connecté" : "Non connecté";
         $("sp-off").classList.toggle("hide", !i.connected);
         $("sp-connect").textContent = i.connected ? "Reconnecter" : "Connecter Spotify";
+        $("st-spotify").innerHTML = i.connected ? `<span class="dot ok"></span>` : "";
         if (i.connected) {
           const st = await invoke("spotify_state").catch(() => null);
-          if (st && st.error) { $("sp-dot").className = "dot err"; $("sp-state").textContent = st.error; }
+          if (st && st.error) { $("sp-dot").className = "dot err"; $("sp-state").textContent = st.error; $("st-spotify").innerHTML = `<span class="dot err"></span>`; }
           else if (st && st.device) $("sp-state").textContent = `Connecté · ${st.device}${st.volume != null ? ` · ${st.volume}%` : ""}`;
         }
       } catch (e) { $("sp-state").textContent = String(e); }
@@ -394,6 +631,7 @@
     $("sp-off").onclick = async () => { await invoke("spotify_disconnect"); $("sp-msg").textContent = ""; spInfo(); };
     spInfo();
 
+    /* ---------------- Discord ---------------- */
     async function dcInfo() {
       try {
         const i = await invoke("discord_info");
@@ -405,7 +643,9 @@
         $("dc-state").textContent = i.live
           ? (v && v.channel ? `Connecté · dans « ${v.channel.name} »` : "Connecté · pas dans un salon vocal")
           : i.linked ? (i.error || "Connecté · en attente de l'appli Discord") : "Non connecté";
+        $("st-discord").innerHTML = i.live ? `<span class="dot ok"></span>` : i.linked ? `<span class="dot"></span>` : "";
         $("dc-off").classList.toggle("hide", !i.linked);
+        $("dc-form").classList.toggle("hide", !!i.live && !$("dc-msg").textContent);
         $("dc-connect").textContent = i.linked ? "Reconnecter" : "Connecter Discord";
       } catch (e) { $("dc-state").textContent = String(e); }
     }
@@ -423,6 +663,7 @@
     dcInfo();
     setInterval(() => { if (!document.hidden && !$("dc-connect").disabled) dcInfo(); }, 5000);
 
+    /* ---------------- réglages enregistrés ---------------- */
     async function load() {
       s = await invoke("get_settings");
       document.querySelectorAll("[data-k]").forEach((el) => (el.checked = !!s[el.dataset.k]));
@@ -434,14 +675,17 @@
       document.querySelectorAll("#lang [data-lang]").forEach((b) => b.classList.toggle("on", b.dataset.lang === cur));
       renderAccounts();
     }
-    function renderAccounts(status = {}) {
+    function renderAccounts() {
       const box = $("accounts");
-      $("acc-count").textContent = s.accounts.length ? `· ${s.accounts.length}` : "";
+      const st = window._status || {};
+      $("acc-count").textContent = s.accounts.length ? ` · ${s.accounts.length}` : "";
+      const bad = s.accounts.some((a) => st[a] && !st[a].ok);
+      $("st-gmail").innerHTML = s.accounts.length ? `${bad ? `<span class="dot err"></span>` : ""}${s.accounts.length}` : "";
       showForm(adding);
       if (!s.accounts.length) { box.innerHTML = `<div class="empty">Aucun compte connecté.</div>`; return; }
       box.innerHTML = s.accounts.map((a) => {
-        const st = status[a] || window._status?.[a];
-        return `<div class="row"><div class="acc"><div class="av">${esc(a[0].toUpperCase())}</div><div><div class="t">${esc(a)}</div><div class="d"><span class="dot ${st ? (st.ok ? "ok" : "err") : ""}"></span>${esc(st ? st.message : "Connexion…")}</div></div></div><button class="btn danger" data-rm="${esc(a)}">Retirer</button></div>`;
+        const x = st[a];
+        return `<div class="row"><div class="acc"><div class="av">${esc(a[0].toUpperCase())}</div><div><div class="t">${esc(a)}</div><div class="d"><span class="dot ${x ? (x.ok ? "ok" : "err") : ""}"></span>${esc(x ? x.message : "Connexion…")}</div></div></div><button class="btn danger" data-rm="${esc(a)}">Retirer</button></div>`;
       }).join("");
     }
     async function save() {
@@ -449,6 +693,7 @@
       s.hidden_tools = [...document.querySelectorAll("[data-tool-k]")].filter((el) => !el.checked).map((el) => el.dataset.toolK);
       s.notif_blocklist = $("block").value.split("\n").map((x) => x.trim()).filter(Boolean);
       s.yt_cookies = $("yt-cookies").value;
+      s.claude_dir = $("claude-dir").value;
       await invoke("save_settings", { s });
     }
     document.querySelectorAll("[data-k], [data-tool-k]").forEach((el) => el.addEventListener("change", save));
@@ -462,13 +707,16 @@
       if (window.I18N) I18N.set(s.lang); else location.reload();
     }));
 
+    /* ---------------- LocalSend ---------------- */
     async function lsInfo() {
       const d = await invoke("phone_device").catch(() => null);
       $("ls-state").textContent = d ? `${d.alias}${d.model ? " · " + d.model : ""} · ${d.ip}` : "Aucun : choisis-le avec 📱 sur un téléchargement terminé";
+      $("st-phone").textContent = d ? d.alias : "";
       $("ls-forget").classList.toggle("hide", !d);
     }
     $("ls-forget").onclick = async () => { await invoke("phone_forget"); lsInfo(); };
     lsInfo();
+
     $("notifset").onclick = () => invoke("open_notification_settings");
     document.addEventListener("click", async (e) => {
       const a = e.target.closest("[data-url]");

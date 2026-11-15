@@ -1,0 +1,43 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Réglages (démo)</title>
+<script>
+  // Démo des réglages hors de l'appli : simule window.__TAURI__ puis charge ui/settings.html.
+  // ?lang=en pour l'anglais.
+  const bus = {};
+  const emit = (n, p) => (bus[n] || []).forEach((f) => f({ payload: p }));
+  const LANG = new URLSearchParams(location.search).get("lang") || "fr";
+  try { localStorage.setItem("island-lang", LANG); } catch {}
+  const S = {
+    accounts: ["alex.martin@gmail.com", "pro.alex@gmail.com"], lang: LANG, auto_copy_otp: true, clear_otp_clipboard: true, show_all_mails: false,
+    notif_island_only: false, notif_sound: true, show_pc_notifications: true, hide_in_fullscreen: true, osd: true, lyrics_compact: true,
+    autostart: true, update_check: true, show_timer: true, hidden_tools: ["claude"], notif_blocklist: ["Microsoft Edge"], claude_dir: "", yt_cookies: "firefox",
+  };
+  window.__TAURI__ = {
+    core: {
+      invoke: async (c, a) => {
+        console.log("invoke", c, a);
+        switch (c) {
+          case "get_ui_config": return { lang: LANG };
+          case "get_settings": return JSON.parse(JSON.stringify(S));
+          case "save_settings": Object.assign(S, a.s); return;
+          case "gmail_status": return [{ account: S.accounts[0], ok: true, message: "Connecté · en attente de mails" }, { account: S.accounts[1], ok: false, message: "Identifiants refusés" }];
+          case "update_pending": return { version: "0.1.2", update: null, updated: null };
+          case "update_check_now": await new Promise((r) => setTimeout(r, 900)); return null;
+          case "iphone_diag": return { service: "running", usb_present: true, apple_devices_installed: true, phone_link_installed: false, phone_link_running: false, phone_link_ever_notified: false, last: { connected: true, name: "iPhone de Alex", battery: 76, charging: true } };
+          case "spotify_info": return { redirect_uri: "http://127.0.0.1:8990/callback", client_id: "0123456789abcdef0123456789abcdef", connected: true };
+          case "spotify_state": return { device: "PC-BUREAU", volume: 64 };
+          case "discord_info": return { redirect_uri: "http://localhost", client_id: "", has_secret: false, linked: false, live: false };
+          case "phone_device": return { alias: "Pixel 8", model: "Android", ip: "192.168.1.42" };
+          default: return null;
+        }
+      },
+    },
+    event: { listen: async (n, f) => { (bus[n] = bus[n] || []).push(f); } },
+  };
+  fetch("../ui/settings.html").then((r) => r.text()).then((h) => {
+    document.open();
+    document.write(h.replace("<head>", '<head><base href="/ui/">'));
+    document.close();
+  });
+</script>

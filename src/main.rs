@@ -26,6 +26,7 @@ mod player;
 mod privacy;
 mod screenshot;
 mod spotify;
+mod update;
 
 use serde::{Deserialize, Serialize};
 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem};
@@ -89,8 +90,8 @@ fn show_settings(app: &AppHandle) {
     }
     let r = tauri::WebviewWindowBuilder::new(app, "settings", tauri::WebviewUrl::App("settings.html".into()))
         .title("WowIsland — Réglages")
-        .inner_size(520.0, 760.0)
-        .min_inner_size(440.0, 560.0)
+        .inner_size(880.0, 640.0)
+        .min_inner_size(720.0, 480.0)
         .center()
         .theme(Some(tauri::Theme::Dark))
         .additional_browser_args(BROWSER_ARGS)
@@ -549,6 +550,26 @@ fn reveal_download(path: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+fn update_pending() -> serde_json::Value {
+    update::pending()
+}
+
+/// « Chercher une mise à jour » dans les réglages : prévient aussi l'île si une version est trouvée.
+#[tauri::command]
+async fn update_check_now(app: AppHandle) -> Result<Option<update::Update>, String> {
+    let found = tauri::async_runtime::spawn_blocking(update::check).await.map_err(|e| e.to_string())??;
+    if let Some(u) = &found {
+        let _ = app.emit("update", u);
+    }
+    Ok(found)
+}
+
+#[tauri::command]
+fn update_install(app: AppHandle) -> Result<(), String> {
+    update::install(app)
+}
+
+#[tauri::command]
 fn game_state() -> games::GameState {
     games::state()
 }
@@ -593,6 +614,8 @@ struct SettingsDto {
     /// navigateur dont le téléchargeur lit les cookies ("" = jamais)
     #[serde(default)]
     yt_cookies: String,
+    #[serde(default = "yes")]
+    update_check: bool,
 }
 
 fn yes() -> bool {
@@ -620,6 +643,7 @@ fn get_settings() -> SettingsDto {
         claude_dir: c.claude_dir,
         lang: c.lang,
         yt_cookies: c.yt_cookies,
+        update_check: c.update_check,
     }
 }
 
@@ -644,6 +668,7 @@ fn save_settings(app: AppHandle, s: SettingsDto) -> Result<(), String> {
         c.claude_dir = s.claude_dir.trim().to_string();
         c.lang = s.lang;
         c.yt_cookies = s.yt_cookies;
+        c.update_check = s.update_check;
     })?;
     std::thread::spawn(|| winnotif::sync(false));
     set_autostart(autostart)?;
@@ -894,6 +919,9 @@ fn main() {
             clip_clear,
             clip_remove,
             reveal_download,
+            update_pending,
+            update_check_now,
+            update_install,
         ])
         .on_window_event(|window, event| {
             // Fermer l'island (Alt+F4) ne doit pas quitter : on ne ferme que les réglages.
@@ -956,6 +984,7 @@ fn main() {
             downloads::start(handle.clone());
             discord::start(handle.clone());
             osd::start(handle.clone());
+            update::start(handle.clone());
             std::thread::spawn(winnotif::start);
             if config::get().gmail.is_empty() {
                 show_settings(&handle);

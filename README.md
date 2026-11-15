@@ -75,6 +75,7 @@ It's transparent and click-through everywhere except on the island, never steals
 | 🤖 **Claude Code** | A mini Claude Code session in the island, plus your usage quota (needs the `claude` CLI) |
 | 🕹️ **Games** | Detects what you're playing, play time, relaunch the last game |
 | ⚔️ **LoL coach** | Riot's Live Client Data API, cross-checked with OP.GG and Data Dragon |
+| 🔄 **Updates** | Once a day, WowIsland checks for a new version and offers it with what's new; one click downloads it, checks its SHA-256 and restarts on it |
 | ⏱️ **And more** | Timer, volume / brightness OSD, mic / camera indicator, clipboard history |
 
 ## Get started
@@ -102,7 +103,7 @@ Code signing is being set up with [SignPath Foundation](https://signpath.org), w
 - Committers and reviewers: [Belius303](https://github.com/Belius303)
 - Approvers: [Belius303](https://github.com/Belius303)
 
-This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it. See the [privacy policy](PRIVACY.md).
+This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it. The only automatic connection is the daily update check (a request for the latest version number on GitHub), which can be turned off in the settings. See the [privacy policy](PRIVACY.md).
 
 ## Build from source
 

@@ -420,6 +420,27 @@ svg { display: block; }
 .sh-btn:active { transform: scale(0.92); }
 .sh-btn.done { background: rgba(48, 209, 88, 0.2); color: var(--green); }
 
+/* ---------------- mise à jour ---------------- */
+[data-view="update"] { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px 0 16px; }
+.up-ic {
+  flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; color: #fff;
+  background: linear-gradient(135deg, #ff5c8a, #9b4dff); box-shadow: 0 4px 14px rgba(155, 77, 255, 0.35);
+}
+.up-ic svg { width: 20px; height: 20px; }
+.up-ic.err { background: rgba(255, 69, 58, 0.18); color: #ff453a; box-shadow: none; }
+.up-text { flex: 1; min-width: 0; }
+.up-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 14.5px; font-weight: 650; line-height: 20px; }
+.up-head small { font-size: 12.5px; font-weight: 500; color: var(--fg2); font-variant-numeric: tabular-nums; }
+.up-notes { list-style: none; margin: 5px 0 0; padding: 0; }
+.up-notes li { font-size: 12.5px; line-height: 19px; color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.up-notes li::before { content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #c06bff; margin: 0 8px 2px 1px; }
+.up-notes li b { color: var(--fg); font-weight: 600; }
+.up-notes li.more::before { background: transparent; }
+.up-err { margin-top: 5px; font-size: 12.5px; line-height: 18px; color: var(--fg2); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.up-bar { display: none; height: 5px; margin-top: 12px; border-radius: 3px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.up-bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #ff5c8a, #9b4dff); transition: width 0.3s var(--ease-out); }
+.up-acts { display: flex; gap: 6px; margin-top: 10px; animation: shacts 0.4s var(--ease-out) both; }
+
 /* ---------------- bulle secondaire ---------------- */
 #bubble {
   position: absolute;

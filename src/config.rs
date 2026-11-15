@@ -63,6 +63,10 @@ pub struct Config {
     /// Navigateur dont le téléchargeur lit les cookies (yt-dlp --cookies-from-browser) : "" = jamais (défaut),
     /// "firefox", "zen", "chrome", "edge", "brave", "opera", "vivaldi". Sert quand YouTube réclame une connexion.
     pub yt_cookies: String,
+    /// Au premier lancement de la journée, regarder s'il y a une nouvelle version sur GitHub (activé par défaut).
+    pub update_check: bool,
+    /// Jour (AAAA-MM-JJ) de la dernière vérification réussie.
+    pub update_last: String,
 }
 
 impl Default for Config {
@@ -89,6 +93,8 @@ impl Default for Config {
             hidden_tools: vec![],
             lang: String::new(),
             yt_cookies: String::new(),
+            update_check: true,
+            update_last: String::new(),
         }
     }
 }
