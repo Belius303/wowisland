@@ -26,40 +26,6 @@ https://github.com/user-attachments/assets/86d487ac-8c8d-4c90-85a4-00bc66c53c4d
 
 It's transparent and click-through everywhere except on the island, never steals focus, and doesn't show up in the taskbar or Alt-Tab. Written in **Rust** (Tauri v2 + WinRT). The interface is in **English and French**.
 
-## A tour
-
-<table>
-  <tr>
-    <td width="50%" valign="top"><img src="docs/shots/en/lyrics.png" alt="Compact island with karaoke lyrics"><br><b>Lyrics, karaoke style.</b> The line being sung lights up word by word, right in the compact island.</td>
-    <td width="50%" valign="top"><img src="docs/shots/en/battery.png" alt="iPhone battery"><br><b>iPhone battery</b> as soon as it's plugged in over USB.</td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="docs/shots/en/player.png" alt="Expanded music player"><br><b>Every player, one island.</b> Spotify, browsers, Apple Music, Deezer, VLC… Colors follow the album art.</td>
-    <td valign="top"><img src="docs/shots/en/music.png" alt="My music"><br><b>My music.</b> Play the tracks you downloaded, without opening anything else.</td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="docs/shots/en/otp.png" alt="Verification code from Gmail"><br><b>2FA codes, already copied.</b> Gmail is watched in real time (IMAP IDLE); just paste.</td>
-    <td valign="top"><img src="docs/shots/en/notif.png" alt="Notifications"><br><b>Notifications</b> from Windows apps and your iPhone (via Phone Link), grouped by app.</td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="docs/shots/en/discord.png" alt="Discord voice channel"><br><b>Discord voice.</b> Who's in the channel, who's talking, mute and deafen.</td>
-    <td valign="top"><img src="docs/shots/en/mixer.png" alt="Volume mixer"><br><b>Mixer.</b> Output device and per-app volume, Spotify included.</td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="docs/shots/en/download.png" alt="Downloading a video"><br><b>Paste a link, get the file.</b> Video, MP3, GIF or transcript, then one click to send it to your phone with LocalSend.</td>
-    <td valign="top"><img src="docs/shots/en/qr.png" alt="QR code read from the screen"><br><b>Screenshots and local OCR.</b> Grab text or a QR code from anywhere on screen.</td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="docs/shots/en/lol.png" alt="League of Legends coach"><br><b>League of Legends coach.</b> Short, timely tips from Riot's official local API.</td>
-    <td valign="top"><img src="docs/shots/en/lolcompact.png" alt="LoL compact tip"><br>…and a discreet reminder in the compact island while you play.</td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center"><img src="docs/shots/en/home.png" alt="Home view with tools" width="60%"><br><b>Home.</b> Hover the island: the time, your tools, and whatever's going on.</td>
-  </tr>
-</table>
-
-<sub>Screenshots come from the built-in demo (<code>dev/demo.html</code>) with made-up data.</sub>
-
 ## Everything it does
 
 | | |

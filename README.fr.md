@@ -26,40 +26,6 @@ https://github.com/user-attachments/assets/86d487ac-8c8d-4c90-85a4-00bc66c53c4d
 
 Elle est transparente et laisse passer les clics partout sauf sur l'île, ne vole jamais le focus et n'apparaît ni dans la barre des tâches ni dans Alt-Tab. Écrite en **Rust** (Tauri v2 + WinRT). L'interface est en **français et en anglais**.
 
-## Petit tour
-
-<table>
-  <tr>
-    <td width="50%" valign="top"><img src="docs/shots/fr/lyrics.png" alt="Île compacte avec les paroles en karaoké"><br><b>Les paroles en karaoké.</b> La ligne chantée s'illumine au fil des mots, directement dans l'île compacte.</td>
-    <td width="50%" valign="top"><img src="docs/shots/fr/battery.png" alt="Batterie de l'iPhone"><br><b>Batterie de l'iPhone</b> dès qu'il est branché en USB.</td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="docs/shots/fr/player.png" alt="Lecteur de musique déplié"><br><b>Tous les lecteurs, une seule île.</b> Spotify, navigateurs, Apple Music, Deezer, VLC… Les couleurs suivent la pochette.</td>
-    <td valign="top"><img src="docs/shots/fr/music.png" alt="Ma musique"><br><b>Ma musique.</b> Écoute les morceaux téléchargés sans rien ouvrir d'autre.</td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="docs/shots/fr/otp.png" alt="Code de vérification Gmail"><br><b>Codes 2FA déjà copiés.</b> Gmail est surveillé en temps réel (IMAP IDLE) : il n'y a plus qu'à coller.</td>
-    <td valign="top"><img src="docs/shots/fr/notif.png" alt="Notifications"><br><b>Notifications</b> des applis Windows et de ton iPhone (via Mobile connecté), regroupées par appli.</td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="docs/shots/fr/discord.png" alt="Salon vocal Discord"><br><b>Vocal Discord.</b> Qui est dans le salon, qui parle, micro et casque coupés.</td>
-    <td valign="top"><img src="docs/shots/fr/mixer.png" alt="Mélangeur de volume"><br><b>Mélangeur.</b> Sortie audio et volume par appli, Spotify compris.</td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="docs/shots/fr/download.png" alt="Téléchargement d'une vidéo"><br><b>Colle un lien, récupère le fichier.</b> Vidéo, MP3, GIF ou transcription, puis un clic pour l'envoyer sur ton téléphone avec LocalSend.</td>
-    <td valign="top"><img src="docs/shots/fr/qr.png" alt="QR code lu à l'écran"><br><b>Captures et OCR en local.</b> Récupère un texte ou un QR code n'importe où à l'écran.</td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="docs/shots/fr/lol.png" alt="Coach League of Legends"><br><b>Coach League of Legends.</b> Des conseils courts, au bon moment, via l'API locale officielle de Riot.</td>
-    <td valign="top"><img src="docs/shots/fr/lolcompact.png" alt="Conseil LoL compact"><br>…et un rappel discret dans l'île compacte pendant la partie.</td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center"><img src="docs/shots/fr/home.png" alt="Accueil avec les outils" width="60%"><br><b>Accueil.</b> Survole l'île : l'heure, tes outils et ce qui se passe.</td>
-  </tr>
-</table>
-
-<sub>Les captures viennent de la démo intégrée (<code>dev/demo.html</code>) avec des données inventées.</sub>
-
 ## Tout ce qu'elle fait
 
 | | |
