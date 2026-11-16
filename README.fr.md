@@ -18,6 +18,11 @@
   &nbsp;·&nbsp; un seul petit exe, sans installation, ~11 Mo
 </p>
 
+<p align="center">
+  <a href="https://github.com/Belius303/wowisland/releases/download/v0.1.3/WowIsland-trailer.mp4"><img src="docs/trailer-preview.webp" alt="WowIsland en action : paroles en direct, codes 2FA, notifications, QR codes" width="100%"></a>
+  <br><sub>▶️ <a href="https://github.com/Belius303/wowisland/releases/download/v0.1.3/WowIsland-trailer.mp4">Voir le trailer complet</a> (1 min, avec le son)</sub>
+</p>
+
 ---
 
 **WowIsland** pose une île vivante en haut de ton écran. Elle affiche la musique en cours avec les paroles synchronisées, fait apparaître tes codes 2FA déjà copiés, regroupe tes notifications, télécharge des vidéos, envoie des fichiers sur ton téléphone… et se fait oublier le reste du temps.

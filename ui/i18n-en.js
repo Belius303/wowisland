@@ -219,6 +219,7 @@ window.I18N_EN = {
 "Envoyer sur le tel (LocalSend)": "Send to phone (LocalSend)",
 "clic droit : autre appareil": "right-click: other device",
 "Annuler l'envoi": "Cancel sending",
+"{0} restant": "{0} left",
 "Envoyer sur quel appareil ?": "Send to which device?",
 "Recherche des appareils LocalSend…": "Looking for LocalSend devices…",
 "Lecture impossible : {0}": "Can't play: {0}",
