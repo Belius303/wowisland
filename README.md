@@ -18,10 +18,7 @@
   &nbsp;·&nbsp; one small exe, no installer, ~11 MB
 </p>
 
-<p align="center">
-  <a href="https://github.com/Belius303/wowisland/releases/download/v0.1.3/WowIsland-trailer.mp4"><img src="docs/trailer-preview.webp" alt="WowIsland in action: live lyrics, 2FA codes, notifications, QR codes" width="100%"></a>
-  <br><sub>▶️ <a href="https://github.com/Belius303/wowisland/releases/download/v0.1.3/WowIsland-trailer.mp4">Watch the full trailer</a> (1 min, with sound)</sub>
-</p>
+https://github.com/user-attachments/assets/86d487ac-8c8d-4c90-85a4-00bc66c53c4d
 
 ---
 
