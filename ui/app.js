@@ -413,11 +413,13 @@ function renderPager(show) {
 
 /* ---------- téléchargements ---------- */
 function fmtBytes(b) {
-  if (b < 1024) return b + " o";
-  const u = ["Ko", "Mo", "Go", "To"];
+  const en = LOC === "en-GB";
+  if (b < 1024) return b + (en ? " B" : " o");
+  const u = en ? ["KB", "MB", "GB", "TB"] : ["Ko", "Mo", "Go", "To"];
   let i = -1;
   do { b /= 1024; i++; } while (b >= 1024 && i < u.length - 1);
-  return (b >= 100 ? Math.round(b) : b.toFixed(1)).toString().replace(".", ",") + " " + u[i];
+  const n = (b >= 100 ? Math.round(b) : b.toFixed(1)).toString();
+  return (en ? n : n.replace(".", ",")) + " " + u[i];
 }
 function dlLabel(d) {
   if (d.live) return "REC " + fmtBytes(d.size);

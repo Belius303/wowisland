@@ -212,6 +212,15 @@ window.I18N_EN = {
 "Lecture": "Play",
 "Lecture / pause": "Play / pause",
 "Lecture aléatoire": "Shuffle",
+"Lecture aléatoire : activée": "Shuffle: on",
+"Répéter : ce morceau": "Repeat: this track",
+"Répéter : toute la liste": "Repeat: whole list",
+"Envoyer sur {0} (LocalSend)": "Send to {0} (LocalSend)",
+"Envoyer sur le tel (LocalSend)": "Send to phone (LocalSend)",
+"clic droit : autre appareil": "right-click: other device",
+"Annuler l'envoi": "Cancel sending",
+"Envoyer sur quel appareil ?": "Send to which device?",
+"Recherche des appareils LocalSend…": "Looking for LocalSend devices…",
 "Lecture impossible : {0}": "Can't play: {0}",
 "Les touches volume s'affichent dans l'île (à la place du cadre Windows).": "The volume keys show up in the island (instead of the Windows overlay).",
 "Les {0} premiers titres du mix": "The first {0} tracks of the mix",
@@ -514,6 +523,8 @@ window.I18N_EN = {
 "{0} résultat": "{0} result",
 "{0} résultats": "{0} results",
 "Aucun résultat": "No results",
+"Extrait": "Trim",
+"Ne garder qu'un passage": "Keep only a part",
 };
 window.I18N_EN_HTML = {
 "<0>Batterie en USB :</0> installe <1>Appareils Apple</1> (Microsoft Store), branche l'iPhone et appuie sur « Faire confiance ».": "<0>Battery over USB:</0> install <1>Apple Devices</1> (Microsoft Store), plug in the iPhone and tap “Trust”.",
@@ -549,4 +560,5 @@ window.I18N_EN_HTML = {
 "Sur l'iPhone : <0>Réglages → Bluetooth → ton PC → (i)</0>, active <1>Afficher les notifications</1> et <2>Partager les notifications système</2>. iPhone verrouillé ou non, ça marche pareil.": "On the iPhone: <0>Settings → Bluetooth → your PC → (i)</0>, turn on <1>Show Notifications</1> and <2>Share System Notifications</2>. It works the same whether the iPhone is locked or not.",
 "<0>N'afficher que l'île :</0> dans <1>Paramètres → Système → Notifications</1>, ouvre <2>Mobile connecté</2> et décoche seulement <3>Afficher les bannières de notification</3>. Laisse les notifications activées : c'est là que l'île les lit.": "<0>Show only the island:</0> in <1>Settings → System → Notifications</1>, open <2>Phone Link</2> and untick only <3>Show notification banners</3>. Keep notifications on: that's where the island reads them.",
 "Sur chaque téléchargement : <0>Ma musique</0> (le lecteur de l'île), <1>Spotify</1> (dossier des fichiers locaux), <2>📱</2> (envoi sur le tel).": "On each download: <0>My music</0> (the island's player), <1>Spotify</1> (local files folder), <2>📱</2> (send to phone).",
+"Vidéo, MP3, GIF ou playlist : YouTube, TikTok, Instagram, X, Reddit, Twitch… et 1 800 autres sites.<0/><1>Spotify et Deezer : les titres sont retrouvés sur YouTube. Pas Netflix, Disney+… (DRM).</1>": "Video, MP3, GIF or playlist: YouTube, TikTok, Instagram, X, Reddit, Twitch… and 1,800 other sites.<0/><1>Spotify and Deezer: tracks are found on YouTube. Not Netflix, Disney+… (DRM).</1>",
 };
